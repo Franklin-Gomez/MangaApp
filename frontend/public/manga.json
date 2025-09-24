@@ -1,0 +1,67 @@
+{
+    "mangas": [ 
+
+        {
+            "id": "1",
+            "title": "Kaoru",
+            "author": "Franklin",
+            "genre": "Fantasía",
+            "description": "Manga sobre la lucha de la humanidad contra los titanes. Manga sobre la lucha de la humanidad contra los titanes.Manga sobre la lucha de la humanidad contra los titanes. Manga sobre la lucha de la humanidad contra los titanesManga sobre la lucha de la humanidad contra los titanes. Manga sobre la lucha de la humanidad contra los titanesManga sobre la lucha de la humanidad contra los titanes. ",
+            "coverUrl": "./public/portada/Kaoru.jpg",
+            "createdAt": "2023-10-01T12:00:00Z"
+        },
+
+        {
+            "id": "2",
+            "title": "Berserk",
+            "author": "Autor Desconocido",
+            "genre": "Aventura",
+            "description": "Otro manga de prueba",
+            "coverUrl": "./public/portada/Berserk.jpg",
+            "createdAt": "2023-11-15T08:30:00Z"
+        },
+
+        {
+            "id": "3",
+            "title": "Gachiakuta",
+            "author": "Tercer Autor",
+            "genre": "Acción",
+            "description": "Tercer manga de prueba",
+            "coverUrl": "./public/portada/Gachiakuta.jpg",
+            "createdAt": "2024-01-20T14:45:00Z"
+        },
+
+        {
+            "id": "4",
+            "title": "One Piece",
+            "author": "Eiichiro Oda",
+            "genre": "Aventura",
+            "description": "Un manga muy popular sobre piratas.",
+            "coverUrl": "./public/portada/OnePiece.jpg",
+            "createdAt": "2023-09-10T10:00:00Z"
+        },
+
+        {
+            "id": "5",
+            "title": "Naruto",
+            "author": "Masashi Kishimoto",
+            "genre": "Acción",
+            "description": "Manga sobre ninjas y su camino para convertirse en Hokage.",
+            "coverUrl": "./public/portada/Naruto.jpg",
+            "createdAt": "2023-08-05T09:15:00Z"
+        },
+
+        {
+            "id": "6",
+            "title": "Attack on Titan",
+            "author": "Hajime Isayama",
+            "genre": "Fantasía",
+            "description": "Manga sobre la lucha de la humanidad contra los titanes.",
+            "coverUrl": "./public/portada/AttackOnTitan.jpg",
+            "createdAt": "2023-07-22T11:30:00Z"
+        }
+
+    ] 
+
+    
+}
