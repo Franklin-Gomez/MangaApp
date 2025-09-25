@@ -6,9 +6,9 @@ export default function ClientDashboard() {
   return (
     <>
 
-      <div className="flex flex-col  min-h-screen justify-between items-center  mx-auto ">
+      <div className="flex flex-col  min-h-screen  mx-auto ">
 
-        <div className=" bg-oscuro  w-full "> 
+        <div className=" bg-muy-oscuro  w-full "> 
           
           <Header/> 
           
@@ -18,7 +18,7 @@ export default function ClientDashboard() {
           <Outlet/>
         </div>
       
-        <div className=" bg-oscuro  w-full ">
+        <div className=" bg-muy-oscuro  w-full ">
 
           <Footer/>
 

@@ -7,7 +7,7 @@
 
 body { 
   font-family: var(--font-base);
-  background-color: var(--color-secundary);
+  background: linear-gradient(to bottom, var(--color-primary), var(--color-suave)); ;
 }
 
 @theme {

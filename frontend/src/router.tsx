@@ -1,7 +1,7 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import ClientDashboard from './view/clienDashboard'
-import Lobby from './view/Principal/lobby'
-
+import Lobby from './view/Pages/Lobby'
+import MangaInfo from './view/Pages/MangaInfo'
 
 export default function Router() {
   return (
@@ -10,10 +10,9 @@ export default function Router() {
         <Route element={<ClientDashboard />}>
 
           <Route path="/" element={<Lobby/>} />
-          <Route path="/about" element={<div>About</div>} />
+          <Route path="/library/:MangaId" element={<MangaInfo/>} />
 
         </Route>
-
       </Routes>
     </BrowserRouter>
   )
