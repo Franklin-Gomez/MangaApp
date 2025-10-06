@@ -28,8 +28,6 @@ export default function MangaInfo () {
     
     if( !MangaInfo ) return <div> "Cargando..."</div>
 
-    console.log(MangaInfo.genre)
-
     return (
 
         <>
