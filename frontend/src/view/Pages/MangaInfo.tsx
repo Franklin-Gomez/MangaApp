@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import type  { Manga } from "../../types"
+import ListCap from "../../components/MangaInfo/ListCap"
 
 export default function MangaInfo () { 
 
@@ -44,7 +45,7 @@ export default function MangaInfo () {
                 </div>
                 
 
-                <div className=" relative z-10 container mx-auto -mt-38 backdrop-blur-lg   ">
+                <div className=" relative z-10 container mx-auto -mt-38 backdrop-blur-lg  ">
                     <div className=" grid grid-cols-[1fr_2fr] gap-6">  {/* Grid con la Imagen y el Titulo */}
 
                         <div className="">  {/* Div con la Imagen */}
@@ -68,11 +69,20 @@ export default function MangaInfo () {
                                 ))}
 
                             </div>
+                            
+                            <p className="mt-4 text-dialogue text-oscuro">En Publicacion</p>
 
-                            <p></p>
-
+                            <div>
+                                <button className=" mt-4 px-4 py-2 border  rounded shadow hover:shadow-lg transition">Leer Ahora</button>
+                                <button className=" mt-4 ml-4 px-4 py-2 border  rounded shadow hover:shadow-lg transition">Agregar a Favoritos</button>
+                                <button className=" mt-4 ml-4 px-4 py-2 border rounded shadow hover:shadow-lg transition">Ver Capitulos</button>
+                            </div>
                         </div>
+
+
                     </div>
+
+                    <ListCap/>
 
                 </div>
 
