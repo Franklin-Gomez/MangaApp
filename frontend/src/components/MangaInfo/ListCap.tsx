@@ -26,13 +26,13 @@ export default function ListCap () {
     if ( !mangas ) return <div> "Cargando..."</div>
 
     return (
-        <div className=" mt-6 container  max-w-screen-xl mx-auto">  {/* Contenedor Principal */}
+        <div className=" my-10 container  max-w-screen-xl mx-auto">  {/* Contenedor Principal */}
 
             
                 <h2 className=" text-subtitle font-bold mb-4">Lista de Capitulos</h2>
 
                     
-                    <div className=" space-y-4 max-h-[500px] overflow-y-auto pr-4 w-full">  {/* Contenedor de la Lista de Capitulos */}
+                    <div className=" space-y-4 max-h-[500px] overflow-y-auto pr-4 w-1/2 mx-auto">  {/* Contenedor de la Lista de Capitulos */}
 
                         { 
                             mangas.map( ( manga ) => (
@@ -44,7 +44,7 @@ export default function ListCap () {
                                     </div>
 
                                     <div>
-                                        <button className=" bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">Leer</button>   
+                                        <a href={`/viewer/${manga.id}`} className=" bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">Leer</a>   
                                     </div>
 
                                 </div>
