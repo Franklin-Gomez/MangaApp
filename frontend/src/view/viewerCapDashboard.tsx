@@ -7,18 +7,20 @@ export default function ViewerCapDashboard () {
 
     <>
         <div className=" min-h-screen flex flex-col ">
+            
             <div className=" bg-muy-oscuro ">
-                <div className=" container mx-auto px-4">
+                {/* <div className=" container mx-auto px-4"> */}
+                <div>
                     <HeaderMangaView/>
                 </div>
             </div>
 
-            <div className=" container mx-auto flex-grow px-4  "> 
+            <div className=" flex-grow "> 
                 <Outlet/> 
             </div>
 
             <div className="bg-muy-oscuro">
-                
+
                 <div className=" container mx-auto px-4  ">
                     <FooterMangaView/>
                 </div>

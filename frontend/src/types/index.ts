@@ -6,4 +6,11 @@ export type Manga = {
     description: string;    
     coverUrl: string;
     createdAt: string;
+    capitulos: Array<{
+        id: number;
+        title: string; 
+        pages: Array<string>;
+        createdAt: string;
+        number: number;
+    }>; 
 }

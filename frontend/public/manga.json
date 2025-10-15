@@ -8,7 +8,22 @@
             "genre": ["Fantasía" , "Acción" , "Aventura" , "Romance" ]  ,
             "description": "Manga sobre la lucha de la humanidad contra los titanes. Manga sobre la lucha de la humanidad contra los titanes. Manga sobre la lucha de la humanidad contra los titanes. Manga sobre la lucha de la humanidad contra los titanes Manga sobre la lucha de la humanidad contra los titanes. Manga sobre la lucha de la humanidad contra los titanesManga sobre la lucha de la humanidad contra los titanes. ",
             "coverUrl": "/portada/Kaoru.jpg",
-            "createdAt": "2023-10-01T12:00:00Z"
+            "createdAt": "2023-10-01T12:00:00Z" ,
+            "capitulos": [
+                {
+                    "id": "1",
+                    "title": "Capitulo 1: El Comienzo",
+                    "number": 1,
+                    "pages": [
+                        "/capitulos/kaoru/capitulo1/1-1.webp",
+                        "/capitulos/kaoru/capitulo1/1-2.webp",
+                        "/capitulos/kaoru/capitulo1/1-3.webp",
+                        "/capitulos/kaoru/capitulo1/1-4.webp"
+
+                    ],
+                    "createdAt": "2023-10-01T12:00:00Z"
+                }
+            ]
         },
 
         {
