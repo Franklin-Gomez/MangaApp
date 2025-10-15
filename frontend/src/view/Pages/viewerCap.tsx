@@ -91,7 +91,7 @@ export default function ViewerCap () {
 
             <div className=" flex justify-between items-center p-4 text-primary max-w-7xl mx-auto">
               <div>
-                <span> Capitulo Anterior </span>
+                <span> Capitulo  </span>
               </div>
 
               <div>
