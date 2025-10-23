@@ -13,8 +13,6 @@ export default function ListCap () {
             throw new Error(data.message || "Manga no Encontrado")
         }
 
-        console.log(data.mangas.length )
-        console.log(data.mangas[0].id)
         setMangas( data.mangas )
     }
 
