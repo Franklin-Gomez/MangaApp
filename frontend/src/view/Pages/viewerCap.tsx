@@ -2,16 +2,18 @@ import { useEffect, useState } from "react";
 import { useParams , Link } from "react-router-dom"
 import type { Manga } from "../../types";
 
+
 export default function ViewerCap () {
 
   const [ mangaInfo , setmangaInfo ] = useState<Manga>();
   const [ paginaActual , setpaginaActual ] = useState(0);
+  //const [ totalPaginas , settotalPaginas ] = useState([]);
 
   const param =  useParams();
   const mangaId = param.MangaId;  // id del manga 
 
-  const aumentarContador = () => setpaginaActual( paginaActual + 1 ); 
-  const disminuirContador = () => setpaginaActual( paginaActual - 1 ); 
+  // const aumentarContador = () => {setpaginaActual( paginaActual + 1 ); 
+  // const disminuirContador = () => setpaginaActual( paginaActual - 1 ); 
 
   
   if(!mangaId) {  return <div>No se encontro el manga</div>  }
@@ -47,8 +49,29 @@ export default function ViewerCap () {
   const handleChangePage = ( event: React.ChangeEvent<HTMLSelectElement> ) => {
     const selectedPageId = Number(event.target.value);
     
-    setpaginaActual( selectedPageId - 1 )
+    //setpaginaActual( selectedPageId - 1 ); // Restar 1 para ajustar al índice basado en cero
+
+    const index = capituloActualx.pages.findIndex((p) => p.id === selectedPageId);
+    if (index !== -1) setpaginaActual(index);
+
   }
+
+  const aumentarContador = () => {
+    if (paginaActual < capituloActualx.pages.length - 1) {
+      setpaginaActual(paginaActual + 1);
+    }
+  };
+
+  const disminuirContador = () => {
+  if (paginaActual > 0) {
+    setpaginaActual(paginaActual - 1);
+  }
+};
+
+
+  // Obtener los IDs de las paginas del capitulo actual
+  const idPaginas = capituloActualx.pages.map( ( p ) => p.id );
+
 
   return (
     <>
@@ -70,12 +93,16 @@ export default function ViewerCap () {
                 
             <div className=" flex justify-center items-center">
 
-              <select className="  p-2 rounded-md m-4" onChange={ (e) => handleChangePage(e) }>
+              <select 
+                className="  p-2 rounded-md m-4" 
+                onChange={ (e) => handleChangePage(e) }
+                value={paginaActual + 1}
+              >
 
-                { capituloActualx.pages.map( ( cap ) =>(
+                { capituloActualx.pages.map( ( cap ) =>(  
 
                   // paginaActual + 1  porque el indice empieza en 0, Sin embargo las paginas empiezan en 1 
-                  <option key={ cap.id } value={ cap.id} > Pagina : { paginaActual + 1  } </option>
+                  <option key={ cap.id } value={ cap.id} > Pagina : { cap.id } </option>
 
                 ))}
                 
