@@ -33,6 +33,7 @@ export default function ViewerCap () {
   useEffect(() => {
 
     fetchCap(mangaId)
+    setpaginaActual(0); // Reiniciar la página actual al cambiar de mangaId
 
   } , [mangaId]);
 
@@ -40,17 +41,22 @@ export default function ViewerCap () {
 
   const { capitulos } = mangaInfo; // todos los capitulos del manga
 
-  const Idcapituloactual = capitulos[0].number
 
   const capituloActualx = capitulos.find((c) => c.id === mangaId);
 
   if( !capituloActualx ) return <div> No se encontro el capitulo </div>
+
+  const indexCapActual = mangaInfo.capitulos.findIndex(c => c.id === mangaId);
+  const capAnterior = mangaInfo.capitulos[indexCapActual - 1];
+  const capSiguiente = mangaInfo.capitulos[indexCapActual + 1];
+
 
   const handleChangePage = ( event: React.ChangeEvent<HTMLSelectElement> ) => {
     const selectedPageId = Number(event.target.value);
     
     //setpaginaActual( selectedPageId - 1 ); // Restar 1 para ajustar al índice basado en cero
 
+    // Mas seguro encontrar el índice de la página seleccionada
     const index = capituloActualx.pages.findIndex((p) => p.id === selectedPageId);
     if (index !== -1) setpaginaActual(index);
 
@@ -63,27 +69,22 @@ export default function ViewerCap () {
   };
 
   const disminuirContador = () => {
-  if (paginaActual > 0) {
-    setpaginaActual(paginaActual - 1);
-  }
-};
-
-
-  // Obtener los IDs de las paginas del capitulo actual
-  const idPaginas = capituloActualx.pages.map( ( p ) => p.id );
-
+    if (paginaActual > 0) {
+      setpaginaActual(paginaActual - 1);
+    }
+  };
 
   return (
     <>
 
-      <div>
+      <div className="">
           <section className="bg-oscuro w-full">
 
             <div className=" flex flex-col justify-center items-center gap-2 p-2">
 
               <h1 className="text-4xl text-primary">{ mangaInfo.title }</h1>
               
-              <p className=" text-subtitle"> { mangaInfo.capitulos[Idcapituloactual - 1].title }</p>
+              <p className=" text-subtitle"> { capituloActualx.title }</p>
               
             </div>
 
@@ -91,7 +92,7 @@ export default function ViewerCap () {
           
           <div className="bg-primary"> {/* Layout para Pasar de Hoja dando click en los lados  y en la misma hoja del manga*/}
                 
-            <div className=" flex justify-center items-center">
+            <div className=" flex justify-center items-center py-4">
 
               <select 
                 className="  p-2 rounded-md m-4" 
@@ -109,7 +110,8 @@ export default function ViewerCap () {
               </select>
 
             </div>
-
+            
+            
             { capitulos.map ( cap => (
 
               <div key={ cap.id } className=" grid grid-cols-3 items-center gap-2 p-2">
@@ -124,10 +126,16 @@ export default function ViewerCap () {
                 <button onClick={ aumentarContador } >
 
                   { cap.id ==  mangaId &&
-                    <img className=" text-2xl text-primary h-full" 
-                      src={ cap.pages[paginaActual].paginaUrl  } 
-                      alt={`Pagina del capitulo ${ cap.title }` } 
-                    />
+
+                    <div className="min-h-[56vh] ">
+
+                      <img className="max-w-full " 
+                        src={ cap.pages[paginaActual].paginaUrl  } 
+                        alt={`Pagina del capitulo ${ cap.title }` } 
+                      />
+
+                    </div>
+              
                   }
                   
                 </button>
@@ -144,12 +152,12 @@ export default function ViewerCap () {
 
           </div>
 
-          <section className="bg-oscuro w-full ">
+          <section className="bg-oscuro ">
 
             <div className=" flex justify-between items-center p-4 text-primary max-w-7xl mx-auto">
 
               <Link
-                to="#"
+                to={ capAnterior ? `/viewer/${capAnterior.id}` : "#"}  // Cambiar despues por el id del capitulo anterior
                 className=" hover:text-accent hover:text-secondary"
               >
                 <div className="flex gap-2 items-center ">
@@ -158,12 +166,14 @@ export default function ViewerCap () {
                   </svg>
 
                   <span> Cap. Anterior </span>
+
                 </div>
+
               </Link>
 
-
               <Link
-                to="#"
+
+                to={  capSiguiente ? `/viewer/${capSiguiente.id}` : "#"}  // Cambiar despues por el id del capitulo anterior
                 className=" hover:text-accent hover:text-secondary"
               >
                 <div className="flex gap-2 items-center ">

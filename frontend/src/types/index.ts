@@ -17,3 +17,14 @@ export type Manga = {
         number: number;
     }>; 
 }
+
+export type MangaCapitulos = Array<{
+    id: string;
+    title: string; 
+    pages: Array<{ 
+        id: number;
+        paginaUrl: string;
+    }>;
+    createdAt: string;
+    number: number;
+}>

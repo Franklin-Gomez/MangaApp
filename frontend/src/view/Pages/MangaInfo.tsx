@@ -1,32 +1,53 @@
 import { useEffect, useState } from "react"
 import type  { Manga } from "../../types"
 import ListCap from "../../components/MangaInfo/ListCap"
+import { useParams } from "react-router-dom"
 
 export default function MangaInfo () { 
 
-    const [ MangaInfo , SetMangaInfo] = useState<Manga>()
+    const [ mangaInfo , setMangaInfo] = useState<Manga>()
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState<string | null>(null)
+    
+    const { MangaId } = useParams<{ MangaId: string }>()
+    const mangaId = Number( MangaId)
+
+    if(!mangaId || isNaN(mangaId) ) return <div> "Manga no encontrado"</div>
 
     async function fetchManga () {
 
-        const response = await fetch('/manga.json')
-        const data = await response.json()
-       
-        if( data.error ) { 
-            throw new Error(data.message || "Manga no Encontrado")
+        try {
+
+            const response = await fetch('/manga.json')
+            const data = await response.json()
+        
+            if( data.error ) { 
+                throw new Error(data.message || "Manga no Encontrado")
+            }
+
+            const  manga = data.mangas.find( (manga: Manga) => manga.id == mangaId )
+
+            setMangaInfo( manga )
+            
+        } catch (error) {
+
+            console.log(error)
+
+        } finally { 
+            setLoading(false)
         }
-
-        SetMangaInfo( data.mangas[0])
-
     }
 
     useEffect(() => {
 
         fetchManga() 
         
-    },[])
-
+    },[mangaId])
     
-    if( !MangaInfo ) return <div> "Cargando..."</div>
+    if( loading ) return <div> "Cargando..."</div>
+    if ( error ) return <div> {error} </div>
+    if( !mangaInfo ) return <div> "Cargando..."</div>
+
 
     return (
 
@@ -36,7 +57,7 @@ export default function MangaInfo () {
               
                 <div 
                     className={` relative bg-cover bg-[center_25%] h-96 w-full z-0`}
-                    style={{ backgroundImage: `url('${MangaInfo.coverUrl}')` }}
+                    style={{ backgroundImage: `url('${mangaInfo.coverUrl}')` }}
                 >  {/* Div Con el Background */}
                     <div className="absolute inset-0 bg-black/60 "></div>
 
@@ -48,7 +69,7 @@ export default function MangaInfo () {
 
                         <div className="">  {/* Div con la Imagen */}
 
-                            <img src={`${MangaInfo.coverUrl}`} 
+                            <img src={`${mangaInfo.coverUrl}`} 
                                 alt="{MangaInfo.title}" 
                                 className=" w-48 h-74  border-4 border-white shadow-lg mx-auto rounded "
                             />
@@ -56,13 +77,13 @@ export default function MangaInfo () {
                         </div>
 
                         <div>
-                            <h1 className=" text-title text-white">{MangaInfo.title}</h1>
-                            <p className="  text-tenue mt-2">{MangaInfo.description}</p>
-                            <p className=" text-primary  mt-2"> {MangaInfo.author}</p>
+                            <h1 className=" text-title text-white">{mangaInfo.title}</h1>
+                            <p className="  text-tenue mt-2">{mangaInfo.description}</p>
+                            <p className=" text-primary  mt-2"> {mangaInfo.author}</p>
 
                             <div className=" mt-4 flex gap-4 space-x-3.5">
 
-                                { MangaInfo.genre.map( (gen, index) => (
+                                { mangaInfo.genre.map( (gen, index) => (
                                     <p key={index} className="  px-2 py-1 rounded shadow hover:shadow-lg transition text-primary bg-muy-oscuro">{gen}</p>
                                 ))}
 
@@ -80,7 +101,13 @@ export default function MangaInfo () {
 
                     </div>
 
-                    <ListCap/>
+                    { mangaInfo.capitulos.length > 0 && 
+
+                        <ListCap
+                            capitulos={ mangaInfo.capitulos }
+                        />
+                       
+                    }        
 
                 </div>
 

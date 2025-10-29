@@ -18,7 +18,7 @@ export default function Router() {
 
         <Route element={<ViewerCapDashboard/>} >
 
-          <Route path="/viewer/:MangaId/" element={<ViewerCap/>} />
+          <Route path="/viewer/:MangaId" element={<ViewerCap/>} />
         
         </Route>
       </Routes>
