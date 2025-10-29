@@ -10,7 +10,8 @@ export default function ViewerCap () {
   //const [ totalPaginas , settotalPaginas ] = useState([]);
 
   const param =  useParams();
-  const mangaId = param.MangaId;  // id del manga 
+  const mangaId = param.mangaId!
+  const capId = param.capId
 
   // const aumentarContador = () => {setpaginaActual( paginaActual + 1 ); 
   // const disminuirContador = () => setpaginaActual( paginaActual - 1 ); 
@@ -26,7 +27,10 @@ export default function ViewerCap () {
       throw new Error(data.message || "Manga no Encontrado")
     } 
 
-    setmangaInfo( data.mangas[0] )  // Cambiar despues por el id
+    const manga = data.mangas.find( (manga: Manga) => manga.id == Number( mangaId ) )
+
+    // console.log( manga ); 
+    setmangaInfo( manga )  // Cambiar despues por el id
     
   }
 
@@ -41,12 +45,16 @@ export default function ViewerCap () {
 
   const { capitulos } = mangaInfo; // todos los capitulos del manga
 
-
-  const capituloActualx = capitulos.find((c) => c.id === mangaId);
+  const capituloActualx = capitulos.find((c) => c.id === capId); // el capitulo actual
 
   if( !capituloActualx ) return <div> No se encontro el capitulo </div>
 
-  const indexCapActual = mangaInfo.capitulos.findIndex(c => c.id === mangaId);
+  const indexCapActual = mangaInfo.capitulos.findIndex(c => c.id == capId);
+
+  console.log( indexCapActual );
+
+  console.log( capituloActualx)
+
   const capAnterior = mangaInfo.capitulos[indexCapActual - 1];
   const capSiguiente = mangaInfo.capitulos[indexCapActual + 1];
 
@@ -73,6 +81,8 @@ export default function ViewerCap () {
       setpaginaActual(paginaActual - 1);
     }
   };
+
+  // console.log( capiguloActualx);
 
   return (
     <>
@@ -125,7 +135,7 @@ export default function ViewerCap () {
 
                 <button onClick={ aumentarContador } >
 
-                  { cap.id ==  mangaId &&
+                  { cap.id ==  capId &&
 
                     <div className="min-h-[56vh] ">
 
