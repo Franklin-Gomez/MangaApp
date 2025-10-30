@@ -7,14 +7,10 @@ export default function ViewerCap () {
 
   const [ mangaInfo , setmangaInfo ] = useState<Manga>();
   const [ paginaActual , setpaginaActual ] = useState(0);
-  //const [ totalPaginas , settotalPaginas ] = useState([]);
 
   const param =  useParams();
   const mangaId = param.mangaId!
   const capId = param.capId
-
-  // const aumentarContador = () => {setpaginaActual( paginaActual + 1 ); 
-  // const disminuirContador = () => setpaginaActual( paginaActual - 1 ); 
 
   
   if(!mangaId) {  return <div>No se encontro el manga</div>  }
@@ -39,22 +35,16 @@ export default function ViewerCap () {
     fetchCap(mangaId)
     setpaginaActual(0); // Reiniciar la página actual al cambiar de mangaId
 
-  } , [mangaId]);
+  } , [mangaId , capId ]);
 
   if( !mangaInfo ) return <div> "Cargando..."</div>
 
   const { capitulos } = mangaInfo; // todos los capitulos del manga
 
   const capituloActualx = capitulos.find((c) => c.id === capId); // el capitulo actual
-
   if( !capituloActualx ) return <div> No se encontro el capitulo </div>
 
   const indexCapActual = mangaInfo.capitulos.findIndex(c => c.id == capId);
-
-  console.log( indexCapActual );
-
-  console.log( capituloActualx)
-
   const capAnterior = mangaInfo.capitulos[indexCapActual - 1];
   const capSiguiente = mangaInfo.capitulos[indexCapActual + 1];
 
@@ -81,8 +71,6 @@ export default function ViewerCap () {
       setpaginaActual(paginaActual - 1);
     }
   };
-
-  // console.log( capiguloActualx);
 
   return (
     <>
@@ -167,7 +155,7 @@ export default function ViewerCap () {
             <div className=" flex justify-between items-center p-4 text-primary max-w-7xl mx-auto">
 
               <Link
-                to={ capAnterior ? `/viewer/${capAnterior.id}` : "#"}  // Cambiar despues por el id del capitulo anterior
+                to={ capAnterior ? `/viewer/${mangaId}/${capAnterior.id}` : "#"}  // Cambiar despues por el id del capitulo anterior
                 className=" hover:text-accent hover:text-secondary"
               >
                 <div className="flex gap-2 items-center ">
@@ -183,7 +171,7 @@ export default function ViewerCap () {
 
               <Link
 
-                to={  capSiguiente ? `/viewer/${capSiguiente.id}` : "#"}  // Cambiar despues por el id del capitulo anterior
+                to={  capSiguiente ? `/viewer/${mangaId}/${capSiguiente.id}` : "#"}  // Cambiar despues por el id del capitulo anterior
                 className=" hover:text-accent hover:text-secondary"
               >
                 <div className="flex gap-2 items-center ">
