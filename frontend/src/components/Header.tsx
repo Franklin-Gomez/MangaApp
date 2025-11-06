@@ -1,3 +1,4 @@
+import { NavLink } from "react-router-dom";
 
 
 export default function Header() {
@@ -16,10 +17,10 @@ export default function Header() {
             <input type="text" placeholder="Buscar...." className="rounded-md p-1 text-black bg-primary w-2xs"/>
           </div>
 
-          <li className="hover:text-accent hover:text-secondary"><a href="/biblioteca">Biblioteca</a></li>
-          <li className="hover:text-accent hover:text-secondary"><a href="/perfile">Perfil</a></li>
-          <li className="hover:text-accent hover:text-secondary"><a href="/registrarse">Registrarse</a></li>
-          <li className="hover:text-accent hover:text-secondary"><a href="/cerrarsesion">Cerrar Sesion</a></li>
+          <li className="hover:text-accent hover:text-secondary"><NavLink to="/library">Biblioteca</NavLink></li>
+          <li className="hover:text-accent hover:text-secondary"><NavLink to="/perfile">Perfil</NavLink></li>
+          <li className="hover:text-accent hover:text-secondary"><NavLink to="/registrarse">Registrarse</NavLink></li>
+          <li className="hover:text-accent hover:text-secondary"><NavLink to="/cerrarsesion">Cerrar Sesion</NavLink></li>
 
         </ul>
       </nav>

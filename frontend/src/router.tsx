@@ -4,6 +4,7 @@ import Lobby from './view/Pages/Lobby'
 import MangaInfo from './view/Pages/MangaInfo'
 import ViewerCap from './view/Pages/viewerCap'
 import ViewerCapDashboard from './view/viewerCapDashboard'
+import Library from './view/Pages/Library'
 
 export default function Router() {
   return (
@@ -13,7 +14,7 @@ export default function Router() {
 
           <Route path="/" element={<Lobby/>} />
           <Route path="/library/:MangaId" element={<MangaInfo/>} />
-
+          <Route path="/library" element={<Library/>} />
         </Route>
 
         <Route element={<ViewerCapDashboard/>} >

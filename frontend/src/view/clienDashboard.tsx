@@ -8,7 +8,7 @@ export default function ClientDashboard() {
 
       <div className="flex flex-col  min-h-screen  mx-auto ">
 
-        <div className=" bg-muy-oscuro  w-full "> 
+        <div className=" bg-muy-oscuro  w-full  "> 
           
           <Header/> 
           
@@ -18,7 +18,7 @@ export default function ClientDashboard() {
           <Outlet/>
         </div>
       
-        <div className=" bg-muy-oscuro  w-full ">
+        <div className=" bg-muy-oscuro  w-full mt-4 ">
 
           <Footer/>
 

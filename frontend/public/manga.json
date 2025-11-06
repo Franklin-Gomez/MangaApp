@@ -77,17 +77,43 @@
             "id": "3",
             "title": "Gachiakuta",
             "author": "Tercer Autor",
-            "genre": "Acción",
+            "genre": ["Acción" , "Aventura" , "SobreNatural" , "Demons" ],
             "description": "Tercer manga de prueba",
             "coverUrl": "/portada/Gachiakuta.jpg",
-            "createdAt": "2024-01-20T14:45:00Z"
+            "createdAt": "2024-01-20T14:45:00Z" ,             
+            "capitulos": [
+                {
+                    "id": "1",
+                    "title": "Capitulo 1: Sword Wind",
+                    "number": 1,
+                    "pages": [
+                        { "id" : 1 , "paginaUrl": "/capitulos/Berserk/capitulo1/1-1.jpg"},
+                        { "id" : 2 , "paginaUrl": "/capitulos/Berserk/capitulo1/1-2.jpg"},
+                        { "id" : 3 , "paginaUrl": "/capitulos/Berserk/capitulo1/1-3.jpg"},
+                        { "id" : 4 , "paginaUrl": "/capitulos/Berserk/capitulo1/1-4.jpg"}
+                    ],
+                    "createdAt": "2023-10-01T12:00:00Z"
+                },
+                {
+                    "id": "2",
+                    "title": "Capitulo 2: Nosfeatu ZOOD",
+                    "number": 2,
+                    "pages": [
+                        { "id" : 1 , "paginaUrl": "/capitulos/Berserk/capitulo2/2-1.jpg"},
+                        { "id" : 2 , "paginaUrl": "/capitulos/Berserk/capitulo2/2-2.jpg"},
+                        { "id" : 3 , "paginaUrl": "/capitulos/Berserk/capitulo2/2-3.jpg"},
+                        { "id" : 4 , "paginaUrl": "/capitulos/Berserk/capitulo2/2-4.jpg"}
+                    ],
+                    "createdAt": "2023-10-01T12:00:00Z"
+                }
+            ]
         },
 
         {
             "id": "4",
             "title": "One Piece",
             "author": "Eiichiro Oda",
-            "genre": "Aventura",
+            "genre": ["Fantasía" , "Acción" , "Aventura" , "SobreNatural" ],
             "description": "Un manga muy popular sobre piratas.",
             "coverUrl": "/portada/OnePiece.jpg",
             "createdAt": "2023-09-10T10:00:00Z"
@@ -97,7 +123,7 @@
             "id": "5",
             "title": "Naruto",
             "author": "Masashi Kishimoto",
-            "genre": "Acción",
+            "genre": ["Fantasía" , "Acción" , "Aventura" , "SobreNatural" , "Demons" ],
             "description": "Manga sobre ninjas y su camino para convertirse en Hokage.",
             "coverUrl": "/portada/Naruto.jpg",
             "createdAt": "2023-08-05T09:15:00Z"
@@ -107,7 +133,7 @@
             "id": "6",
             "title": "Attack on Titan",
             "author": "Hajime Isayama",
-            "genre": "Fantasía",
+            "genre": ["Fantasía" , "Acción" , "Aventura" , "Gore" ],
             "description": "Manga sobre la lucha de la humanidad contra los titanes.",
             "coverUrl": "/portada/AttackOnTitan.jpg",
             "createdAt": "2023-07-22T11:30:00Z"
