@@ -3,7 +3,7 @@
 
         {
             "id": "1",
-            "title": "Kaoru Hana wa Rin to Saku",
+            "title": "kaoru Hana wa Rin to Saku",
             "author": "Franklin D. Gomez",
             "genre": ["Fantasía" , "Acción" , "Aventura" , "Romance" ]  ,
             "description": "Manga sobre la lucha de la humanidad contra los titanes. Manga sobre la lucha de la humanidad contra los titanes. Manga sobre la lucha de la humanidad contra los titanes. Manga sobre la lucha de la humanidad contra los titanes Manga sobre la lucha de la humanidad contra los titanes. Manga sobre la lucha de la humanidad contra los titanesManga sobre la lucha de la humanidad contra los titanes. ",
@@ -39,7 +39,7 @@
 
         {
             "id": "2",
-            "title": "Berserk",
+            "title": "berserk",
             "author": "Autor Desconocido",
             "genre": ["Fantasía" , "Acción" , "Aventura" , "SobreNatural" , "Demons" ],
             "description": "Otro manga de prueba",
@@ -75,7 +75,7 @@
 
         {
             "id": "3",
-            "title": "Gachiakuta",
+            "title": "gachiakuta",
             "author": "Tercer Autor",
             "genre": ["Acción" , "Aventura" , "SobreNatural" , "Demons" ],
             "description": "Tercer manga de prueba",
@@ -111,7 +111,7 @@
 
         {
             "id": "4",
-            "title": "One Piece",
+            "title": "one Piece",
             "author": "Eiichiro Oda",
             "genre": ["Fantasía" , "Acción" , "Aventura" , "SobreNatural" ],
             "description": "Un manga muy popular sobre piratas.",
@@ -131,7 +131,17 @@
 
         {
             "id": "6",
-            "title": "Attack on Titan",
+            "title": "attack on Titan",
+            "author": "Hajime Isayama",
+            "genre": ["Fantasía" , "Acción" , "Aventura" , "Gore" ],
+            "description": "Manga sobre la lucha de la humanidad contra los titanes.",
+            "coverUrl": "/portada/AttackOnTitan.jpg",
+            "createdAt": "2023-07-22T11:30:00Z"
+        },
+
+        {
+            "id": "7",
+            "title": "attack on Titan",
             "author": "Hajime Isayama",
             "genre": ["Fantasía" , "Acción" , "Aventura" , "Gore" ],
             "description": "Manga sobre la lucha de la humanidad contra los titanes.",
