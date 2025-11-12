@@ -121,9 +121,14 @@ export default function Library () {
                 </form>
 
 
-                <main className="basis-2/3">
+                <main className="basis-2/3 grid grid-cols-4 gap-4 mt-4 ">
                     {/* Aquí iría la lista de mangas en la biblioteca del usuario */}
-                    <MangaCard/>
+                    {Mangas && Mangas.map( ( manga ) => (
+                        <MangaCard 
+                            key={ manga.id }
+                            manga = { manga }
+                        />
+                    ))}
                 </main>
 
 

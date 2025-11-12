@@ -43,11 +43,11 @@ export default function Lobby () {
           />
           
         ))}
-        
+
       </div>
       
-      {/* 
-      <div>
+      
+      {/* <div>
         <h1 className=" text-subtitle my-2 p-2"> Mangas Tendencias </h1>
       </div>
 
