@@ -14,7 +14,7 @@ export default function ClientDashboard() {
           
         </div>
 
-        <div className=" container mx-auto">
+        <div className=" flex-1 container mx-auto">
           <Outlet/>
         </div>
       

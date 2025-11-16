@@ -2,7 +2,6 @@ import {  useEffect, useState } from "react"
 import type { Manga } from "../../types"
 import MangaCard from "../../components/lobby/MangaCard"
 import { useForm, type SubmitHandler } from "react-hook-form"
-import { set } from "zod"
 
 type FormsInputs = {
     search: string
@@ -12,6 +11,8 @@ type FormsInputs = {
 export default function Library () {
 
     const [Mangas , setMangas] = useState<Manga[]>()
+    const [filtermanga , setFilterManga] = useState<Manga[]>()
+
     const { register, handleSubmit } = useForm<FormsInputs>({
         defaultValues : { 
             search: "",
@@ -34,7 +35,9 @@ export default function Library () {
             setMangas( data.mangas ) 
             
         } catch (error) {
+
             console.log( error )
+
         }
 
     }
@@ -44,20 +47,18 @@ export default function Library () {
     },[])
 
     const handleSearch : SubmitHandler<FormsInputs> = ( data ) => {
-        const { search , sortBy } = data
+        const { search  } = data
 
         const filteredMangas = Mangas?.filter( manga => 
             manga.title.toLowerCase().includes( search.toLowerCase() )
         )
 
-        filteredMangas && ( setMangas( filteredMangas ) )        
+        filteredMangas && ( setFilterManga( filteredMangas ) )  
 
         // Lógica para ordenar los mangas según el criterio seleccionado
         //let sortedMangas = [...(filteredMangas || [])]
 
     }
-
-    { console.log(Mangas) }
 
 
     return ( 
@@ -121,14 +122,16 @@ export default function Library () {
                 </form>
 
 
-                <main className="basis-2/3 grid grid-cols-4 gap-4 mt-4 ">
-                    {/* Aquí iría la lista de mangas en la biblioteca del usuario */}
-                    {Mangas && Mangas.map( ( manga ) => (
-                        <MangaCard 
-                            key={ manga.id }
-                            manga = { manga }
-                        />
-                    ))}
+                <main className="basis-2/3 grid grid-cols-4 gap-4 mt-4 "> 
+
+                    { 
+                        (filtermanga && filtermanga.length > 0 ? filtermanga : Mangas)?.map((manga) => (
+                            <MangaCard 
+                            key={manga.id}
+                            manga={manga}
+                        /> ))
+                    }
+
                 </main>
 
 

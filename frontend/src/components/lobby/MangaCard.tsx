@@ -4,10 +4,6 @@ import type { Manga } from '../../types'
 
 export default function MangaCard (  { manga }   : { manga: Manga } ) {
 
-    console.log( manga.coverUrl )
-
-
-
     return (
         <>
 

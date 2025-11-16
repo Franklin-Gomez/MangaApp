@@ -11,9 +11,9 @@ export default function HeaderMangaView () {
 
       <nav className="flex justify-between items-center max-w-7xl mx-auto">
 
-          <a href="/">
+        <Link to="/">
           <h1 className="text-title p-4 font-">MangaApp</h1>
-        </a>
+        </Link>
 
         <ul className=" flex justify-around p-4 space-x-6">
 
