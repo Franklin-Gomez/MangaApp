@@ -1,9 +1,9 @@
 import { Router } from 'express';
-import  { MangaController }  from '../controllers/MangaController';
+import { MangaController }  from '../controllers/MangaController';
 
 const router = Router();
 
-    router.get('/create', MangaController.createManga);
+    router.post('/create', MangaController.createManga);
     router.get('/getAll', MangaController.getMangaList);
     router.get('/getforId/:id', MangaController.getMangaById);
     router.get('/updateManga/:id' , MangaController.updateManga);

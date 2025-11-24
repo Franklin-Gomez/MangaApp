@@ -8,13 +8,28 @@ export class MangaController {
 
         try {
 
-            const mangaRef = await addDoc(collection( db , 'Manga'), {
-                title: "Shin Kami",
-                author: "Franklin",
-                genre: "Fantasía",
-                description: "Manga de prueba",
-                coverUrl: "https://example.com/cover.jpg",
-                createdAt: Timestamp.now()
+            const mangaRef = await addDoc(collection( db , 'Manga'),{
+                title: "gachiakuta",
+                author: "Tercer Autor",
+                genre: ["Acción" , "Aventura" , "SobreNatural" , "Demons" ],
+                description: "Tercer manga de prueba",
+                coverUrl: "/portada/Gachiakuta.jpg",
+                createdAt: "2024-01-20T14:45:00Z" ,             
+                capitulos: [
+                    {
+                        "id": "1",
+                        "title": "Capitulo 1: Sword Wind",
+                        "number": 1,
+                        "pages": [
+                            { "id" : 1 , "paginaUrl": "/capitulos/Berserk/capitulo1/1-1.jpg"},
+                            { "id" : 2 , "paginaUrl": "/capitulos/Berserk/capitulo1/1-2.jpg"},
+                            { "id" : 3 , "paginaUrl": "/capitulos/Berserk/capitulo1/1-3.jpg"},
+                            { "id" : 4 , "paginaUrl": "/capitulos/Berserk/capitulo1/1-4.jpg"}
+                        ],
+                        "createdAt": "2023-10-01T12:00:00Z"
+                    }
+                ]
+
             });
 
             console.log("Manga created with ID: ", mangaRef);
