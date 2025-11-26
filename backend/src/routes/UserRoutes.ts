@@ -11,7 +11,7 @@ const router = Router();
 
     router.get('/profile/:id', UserController.getUserProfile);
 
-    router.put('/profile', UserController.updateUserProfile);
+    router.patch('/update-profile/:id', UserController.updateUserProfile);
 
     router.post('/change-password', UserController.changePassword);
     

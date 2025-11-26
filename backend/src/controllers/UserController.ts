@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { db } from '../db/firebaseConfig';
-import { collection, addDoc , getDoc , doc , deleteDoc } from 'firebase/firestore';
+import { collection, addDoc , getDoc , doc , deleteDoc , updateDoc } from 'firebase/firestore';
 //import { ref } from 'firebase/database';
 
 export class UserController {
@@ -56,15 +56,12 @@ export class UserController {
             if(!userRef) {
                 return res.status(500).json({ message: 'Error creando el usuario' });
             }
-
             
         } catch (error) {
 
             return res.status(500).json({ message: 'Error creando el usuario' });
             
         }        
-
-
 
     }
 
@@ -108,7 +105,29 @@ export class UserController {
     }
 
     static async updateUserProfile (req: Request, res: Response) {      
+        try {
+            
+            const userId = req.params.id;
+            const updatedData = req.body;
+            if (!userId) {
+                return res.status(400).json({ message: 'Usuario no existe' });
+            }
 
+            // Lógica para obtener el perfil del usuario desde la base de datos
+            // Simulación de obtención de perfil de usuario 
+            const userRef = doc(db, "Users", userId);
+
+            // Aquí iría la lógica para actualizar el perfil del usuario con los datos de req.body
+            await updateDoc(userRef, updatedData);
+
+            res.json({ message: 'Perfil del usuario actualizado correctamente' });;
+
+        } catch (error) {
+
+            console.log(error);
+            return res.status(500).json({ message: 'Error actualizando el perfil del usuario' });
+
+        }
     }
 
     static async changePassword (req: Request, res: Response) {      
