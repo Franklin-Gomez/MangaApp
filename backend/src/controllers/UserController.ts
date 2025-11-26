@@ -38,7 +38,33 @@ export class UserController {
 
     static async loginUser (req: Request, res: Response) {      
 
-        // const { username, password } = req.body;
+        try {
+
+            const { email, password } = req.body;   
+
+            if( !email || !password ) {
+                return res.status(400).json({ message: 'Usuario y Contraseña son obligatorio' });
+            }
+
+            const  userRef = doc( db, "Users" , email);
+
+            // Lógica para buscar el usuario en la base de datos
+            const userSnap = await getDoc( userRef );
+
+            console.log(userSnap.data());
+
+            if(!userRef) {
+                return res.status(500).json({ message: 'Error creando el usuario' });
+            }
+
+            
+        } catch (error) {
+
+            return res.status(500).json({ message: 'Error creando el usuario' });
+            
+        }        
+
+
 
     }
 
@@ -105,6 +131,10 @@ export class UserController {
             //reference a la coleccion de usuarios
             const userRef = doc( db, "Users" , userId);
 
+            if( !userRef ) {
+                return res.status(404).json({ message: 'Usuario no encontrado' });
+            }
+
             // sacar el documento
             await deleteDoc( userRef );
 
@@ -113,7 +143,7 @@ export class UserController {
         } catch (error) {
 
             console.log(error);
-            return res.status(500).json({ message: 'Error obteniendo el perfil del usuario' });
+            return res.status(500).json({ message: 'Error al Eliminar el usuario' });
             
         }
 
