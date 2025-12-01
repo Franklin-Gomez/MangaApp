@@ -8,31 +8,22 @@ export class MangaController {
 
         try {
 
-            const mangaRef = await addDoc(collection( db , 'Manga'),{
-                title: "gachiakuta",
-                author: "Tercer Autor",
-                genre: ["Acción" , "Aventura" , "SobreNatural" , "Demons" ],
-                description: "Tercer manga de prueba",
-                coverUrl: "/portada/Gachiakuta.jpg",
-                createdAt: "2024-01-20T14:45:00Z" ,             
-                capitulos: [
-                    {
-                        "id": "1",
-                        "title": "Capitulo 1: Sword Wind",
-                        "number": 1,
-                        "pages": [
-                            { "id" : 1 , "paginaUrl": "/capitulos/Berserk/capitulo1/1-1.jpg"},
-                            { "id" : 2 , "paginaUrl": "/capitulos/Berserk/capitulo1/1-2.jpg"},
-                            { "id" : 3 , "paginaUrl": "/capitulos/Berserk/capitulo1/1-3.jpg"},
-                            { "id" : 4 , "paginaUrl": "/capitulos/Berserk/capitulo1/1-4.jpg"}
-                        ],
-                        "createdAt": "2023-10-01T12:00:00Z"
-                    }
-                ]
+            const { title, author, genre, description, coverUrl } = req.body;
 
+            const mangaRef = await addDoc(collection( db , 'Manga'),{
+                title: title,
+                author: author,
+                genre: genre,
+                description: description,
+                coverUrl: coverUrl,
+                createdAt: Timestamp.now() 
             });
 
-            console.log("Manga created with ID: ", mangaRef);
+            if ( !mangaRef.id) {
+                return res.status(500).json({ message: 'Error al Crear Manga' });
+            }
+
+            return res.status(201).json({ message: 'Manga creado' });
 
         } catch (error) {
 
@@ -40,65 +31,93 @@ export class MangaController {
             return res.status(500).json({ message: 'Error creating manga' });
             
         }
-
-        res.json({ message: 'Manga created' });
     }
 
-    static async getMangaList(req : Request , res : Response) {
+    static async getAllMangas(req : Request , res : Response) {
 
         const mangaList : any[] = [];
-        const querySnapshot = await getDocs(collection(db, "Manga"));
 
-        querySnapshot.forEach((doc) => {
-            mangaList.push({ id: doc.id, ...doc.data() });
-        });
+        try {
 
-        res.json(mangaList);
+            const querySnapshot = await getDocs(collection(db, "Manga"));
+
+            querySnapshot.forEach((doc) => {
+                mangaList.push({ id: doc.id, ...doc.data() });
+            });
+
+            return res.json(mangaList);
+
+        } catch (error) {
+
+            console.error("Error getting documents: ", error);
+            return res.status(500).json({ message: 'Error al Mostrar los Mangas' });
+            
+        }
 
     }
 
     static async getMangaById(req : Request , res : Response) {
 
-        const mangaId = req.params.id;  // req.params.id;
+        try {
 
-        const mangaRef = doc(db, "Manga", mangaId);
-        const mangaSnap = await getDoc(mangaRef);
-        const chapters : any[] = [];
+            const mangaId = req.params.id;  // req.params.id;
 
-        if (!mangaSnap.exists()) {
-            return res.status(404).json({ message: 'Manga no Encontrado' });
+            const mangaRef = doc(db, "Manga", mangaId); // direccion del documento a donde buscar 
+            const mangaSnap = await getDoc(mangaRef); // buscar el documento con la direccion o referencia
+
+            if (!mangaSnap.exists()) { // verificamos si el documento existe
+                return res.status(404).json({ message: 'Manga no Encontrado' });
+            }
+
+            res.json({ ...mangaSnap.data() });
+
+        } catch (error) {
+            
+            return res.status(500).json({ message: 'Error al Mostrar el Manga' });
+        
         }
-
-        chapters.push({ id: mangaSnap.id, ...mangaSnap.data() });
-
-        res.json({ mangaId, chapters });
 
     }
 
     static async updateManga(req : Request , res : Response) {
-        
-        const mangaId = req.params.id;  // req.params.id;
 
-        const mangaRef = doc(db, "Manga", mangaId);
-        const mangaSnap = await getDoc(mangaRef);
+        try {
 
-        if (!mangaSnap.exists()) {
-            return res.status(404).json({ message: 'Manga no Encontrado' });
+            const mangaId = req.params.id;  // req.params.id;
+
+            const mangaRef = doc(db, "Manga", mangaId);
+            const mangaSnap = await getDoc(mangaRef);
+    
+            if (!mangaSnap.exists()) {
+                return res.status(404).json({ message: 'Manga no Encontrado' });
+            }
+
+            const existingMangaData = mangaSnap.data();
+
+            if( !req.body || Object.keys(req.body).length === 0 ) {
+                return res.status(400).json({ message: 'Datos de manga no proporcionados para actualizar' });
+            }
+
+            const newMangaData = req.body;    // Datos actualizados del manga desde el cuerpo de la solicitud
+
+            const mangaData =  { // simular datos actualizados del formulario
+                coverUrl: newMangaData.coverUrl ?? existingMangaData.coverUrl,
+                description: newMangaData.description ?? existingMangaData.description,
+                title: newMangaData.title ?? existingMangaData.title,
+                genre: newMangaData.genre ?? existingMangaData.genre,
+                author: newMangaData.author ?? existingMangaData.author,
+            }
+
+            await updateDoc(mangaRef, mangaData);
+
+            res.json({ message: 'Manga actualizado'});
+            
+        } catch (error) {
+
+            console.error("Error updating document: ", error);
+            return res.status(500).json({ message: 'Error al actualizar el Manga' });
+            
         }
-
-        //const mangaData = req.body;    // Datos actualizados del manga desde el cuerpo de la solicitud
-
-        const mangaData =  { // simular datos actualizados del formulario
-            "coverUrl": "https://exampleActualizado.com/cover.jpg",
-            "description": "Manga de prueba actualizado",
-            "title": "Shin Kami Actualizado",
-            "genre": "Fantasía Actualizado",
-            "author": "Franklin Actualizado",
-        }
-
-        const updateMangaa = await updateDoc(mangaRef, mangaData);
-
-        res.json({ message: 'Manga actualizado', mangaId, updateMangaa });
         
     }
 
@@ -106,8 +125,8 @@ export class MangaController {
         //const mangaId = req.params.id;  // req.params.id;       
         const mangaId = 'Manga';  // req.params.id;
 
-        const mangaRef = doc(db, "Manga", mangaId);
-        const mangaSnap = await getDoc(mangaRef);
+        const mangaRef = doc(db, "Manga", mangaId); // referencia al documento del manga
+        const mangaSnap = await getDoc(mangaRef); // obtener el documento del manga
 
         // verificar si el manga existe
         if (!mangaSnap.exists()) {

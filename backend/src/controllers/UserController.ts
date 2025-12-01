@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { db } from '../db/firebaseConfig';
-import { collection, addDoc , getDoc , doc , deleteDoc , updateDoc } from 'firebase/firestore';
+import { collection, addDoc , getDoc , doc , deleteDoc , updateDoc, where , query, getDocs } from 'firebase/firestore';
 //import { ref } from 'firebase/database';
 
 export class UserController {
@@ -46,20 +46,31 @@ export class UserController {
                 return res.status(400).json({ message: 'Usuario y Contraseña son obligatorio' });
             }
 
-            const  userRef = doc( db, "Users" , email);
+            const  userRef = collection( db, "Users");
 
-            // Lógica para buscar el usuario en la base de datos
-            const userSnap = await getDoc( userRef );
+            // consulta para buscar el usuario por email
+            const q = query(userRef, where ("email" , "==" , email ) );
+            const querySnapshot = await getDocs( q );
 
-            console.log(userSnap.data());
-
-            if(!userRef) {
-                return res.status(500).json({ message: 'Error creando el usuario' });
+            if( querySnapshot.empty ) {
+                return res.status(401).json({ message: 'Credenciales inválidas' });
             }
+
+            if ( !querySnapshot.docs[0].data().email) {
+                return res.status(401).json({ message: querySnapshot.docs[0].data() });
+            }
+
+            if ( querySnapshot.docs[0].data().password !== password ) {
+                return res.status(401).json({ message: 'Credenciales inválidas' });
+            }
+
+            return res.status(200).json({ message: 'Usuario logueado exitosamente'});
+
             
         } catch (error) {
 
-            return res.status(500).json({ message: 'Error creando el usuario' });
+            console.log(error);
+            return res.status(500).json({ message: 'Error Iniciando sesion' });
             
         }        
 
@@ -106,7 +117,7 @@ export class UserController {
 
     static async updateUserProfile (req: Request, res: Response) {      
         try {
-            
+
             const userId = req.params.id;
             const updatedData = req.body;
             if (!userId) {
