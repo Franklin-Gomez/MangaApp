@@ -7,6 +7,6 @@ const router = Router();
     router.get('/getAll', MangaController.getAllMangas);
     router.get('/getOneManga/:id', MangaController.getMangaById);
     router.patch('/updateManga/:id' , MangaController.updateManga);
-    router.get('/deleteManga/:id' , MangaController.deleteManga);
+    router.delete('/deleteManga/:id' , MangaController.deleteManga);
 
 export default router;

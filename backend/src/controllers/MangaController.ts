@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { getFirestore, collection, doc, addDoc, updateDoc, deleteDoc, getDocs , getDoc , Timestamp, query } from "firebase/firestore";
+import { getFirestore, collection, doc, addDoc, updateDoc, deleteDoc, getDocs , getDoc , Timestamp, query , where, writeBatch } from "firebase/firestore";
 import { db }  from '../db/firebaseConfig';
 
 export class MangaController {
@@ -122,27 +122,57 @@ export class MangaController {
     }
 
     static async deleteManga(req : Request , res : Response) {
-        //const mangaId = req.params.id;  // req.params.id;       
-        const mangaId = 'Manga';  // req.params.id;
 
-        const mangaRef = doc(db, "Manga", mangaId); // referencia al documento del manga
-        const mangaSnap = await getDoc(mangaRef); // obtener el documento del manga
+        try {
+            
+            // borrar el Manga
+            const mangaId = req.params.id;  // req.params.id;       
 
-        // verificar si el manga existe
-        if (!mangaSnap.exists()) {
-            return res.status(404).json({ message: 'Manga no Encontrado' });
-        }
+            const mangaRef = doc(db, "Manga", mangaId); // referencia al documento del manga
+            const mangaSnap = await getDoc(mangaRef); // obtener el documento del manga
 
-        // eliminar el manga
-        await deleteDoc(mangaRef);
+            // verificar si el manga existe
+            if (!mangaSnap.exists()) {
+                return res.status(404).json({ message: 'Manga no Encontrado' });
+            }
 
-        // verificar si el manga fue eliminado
-        if(!mangaSnap.exists()){
-            return res.status(200).json({ message: 'Manga Eliminado Correctamente' });
-        } else { 
+            // Buscar capítulos del manga
+            const chaptersQuery = query(
+                collection(db, "chapters"),
+                where("mangaId", "==", mangaId)
+            );
+
+            // todos los capitulso de este manga
+            const chaptersSnap = await getDocs(chaptersQuery);
+
+            //cree un batch para operaciones atomicas ( varias operaciones en una sola )
+            const batch = writeBatch(db);
+
+
+            //   guardar todas las operaciones de eliminacion en el batch
+            // delete capitulos/capId1
+            // delete capitulos/capId2
+            // delete Manga/mangaId
+            // asi es como se veria en firestore , aun no ejecuta 
+            chaptersSnap.forEach((docSnap) => {
+                batch.delete(docSnap.ref);
+            });
+
+            // guardar la eliminacion del manga en el batch
+            batch.delete(mangaRef);
+
+            //  Ejecutar las operaciónes en el batch
+            await batch.commit();
+
+            return res.json({ message: "Manga y capítulos eliminados correctamente" });
+            
+        } catch (error) {
+
+            console.log("Error deleting document: ", error);
             return res.status(500).json({ message: 'Error al eliminar el Manga' });
+            
         }
-    
+
     }
 
 }
