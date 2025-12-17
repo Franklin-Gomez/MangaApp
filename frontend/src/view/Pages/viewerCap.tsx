@@ -1,65 +1,91 @@
 import { useEffect, useState } from "react";
 import { useParams , Link } from "react-router-dom"
-import type { Manga } from "../../types";
+import type { MangaType } from "../../types";
+import { useQuery } from "@tanstack/react-query";
+import { getAllChapters, getChapterById } from "../../api";
 
 
 export default function ViewerCap () {
 
-  const [ mangaInfo , setmangaInfo ] = useState<Manga>();
+  const [ mangaInfo , setmangaInfo ] = useState<MangaType>();
   const [ paginaActual , setpaginaActual ] = useState(0);
 
   const param =  useParams();
   const mangaId = param.mangaId!
-  const capId = param.capId
+  const capId = param.capId!
 
   
   if(!mangaId) {  return <div>No se encontro el manga</div>  }
+  if(!capId) {  return <div>No se encontro el capitulo</div>  }
 
-  async function fetchCap ( id: string ) {
-    const response = await fetch(`/manga.json `)
-    const data = await response.json() 
+  const { isPending , isError , data : capitulos , error: queryError } = useQuery({
+    queryKey: ['Chapter'],
+    queryFn: () => getAllChapters( mangaId ),
+    enabled: !!mangaId,
+    retry: 0
+  })
 
-    if( data.error ) {
-      throw new Error(data.message || "Manga no Encontrado")
-    } 
 
-    const manga = data.mangas.find( (manga: Manga) => manga.id == Number( mangaId ) )
+  // if( data && !mangaInfo ) {
+  //   setmangaInfo( data[0] ) // porque el api devuelve un array de capitulos
+  // }
 
-    // console.log( manga ); 
-    setmangaInfo( manga )  // Cambiar despues por el id
+  if( isPending ) return <div> Cargando Capitulo... </div>
+  if( isError ) return <div> Error cargando el capitulo: { (queryError as Error).message } </div>
+
+
+  // async function fetchCap ( id: string ) {
+  //   const response = await fetch(`/manga.json `)
+  //   const data = await response.json() 
+
+  //   if( data.error ) {
+  //     throw new Error(data.message || "Manga no Encontrado")
+  //   } 
+
+  //   const manga = data.mangas.find( (manga: Manga) => manga.id == Number( mangaId ) )
+
+  //   // console.log( manga ); 
+  //   setmangaInfo( manga )  // Cambiar despues por el id
     
-  }
+  // }
 
-  useEffect(() => {
+  // useEffect(() => {
 
-    fetchCap(mangaId)
-    setpaginaActual(0); // Reiniciar la página actual al cambiar de mangaId
+  //   fetchCap(mangaId)
+  //   setpaginaActual(0); // Reiniciar la página actual al cambiar de mangaId
 
-  } , [mangaId , capId ]);
+  // } , [mangaId , capId ]);
 
-  if( !mangaInfo ) return <div> "Cargando..."</div>
+  //if( !mangaInfo ) return <div> "Cargando..."</div>
 
-  const { capitulos } = mangaInfo; // todos los capitulos del manga
+  //const { capitulos } = mangaInfo; // todos los capitulos del manga
+
+  // ----------------------------------Logica para obtener el capitulo actual ----------------------------
 
   const capituloActualx = capitulos.find((c) => c.id === capId); // el capitulo actual
   if( !capituloActualx ) return <div> No se encontro el capitulo </div>
 
-  const indexCapActual = mangaInfo.capitulos.findIndex(c => c.id == capId);
-  const capAnterior = mangaInfo.capitulos[indexCapActual - 1];
-  const capSiguiente = mangaInfo.capitulos[indexCapActual + 1];
+  // ----------------------------------Logica para obtener el capitulo anterior y siguiente ----------------------------
 
+  const indexCapActual = capitulos.findIndex(c => c.id == capId); //  posicion del capitulo actual en el array de capitulos
 
+  const capAnterior = capitulos[indexCapActual - 1];
+  const capSiguiente = capitulos[indexCapActual + 1];
+
+  // ----------------------------------Funcion para cambiar de pagina con el select ----------------------------
   const handleChangePage = ( event: React.ChangeEvent<HTMLSelectElement> ) => {
+
     const selectedPageId = Number(event.target.value);
     
-    //setpaginaActual( selectedPageId - 1 ); // Restar 1 para ajustar al índice basado en cero
+    setpaginaActual( selectedPageId - 1 );  //Restar 1 para ajustar al índice basado en cero
 
-    // Mas seguro encontrar el índice de la página seleccionada
+    //Mas seguro encontrar el índice de la página seleccionada
     const index = capituloActualx.pages.findIndex((p) => p.id === selectedPageId);
     if (index !== -1) setpaginaActual(index);
 
   }
 
+  // ----------------------------------Funciones para cambiar de pagina con botones dando click ----------------------------
   const aumentarContador = () => {
     if (paginaActual < capituloActualx.pages.length - 1) {
       setpaginaActual(paginaActual + 1);
@@ -79,8 +105,6 @@ export default function ViewerCap () {
           <section className="bg-oscuro w-full">
 
             <div className=" flex flex-col justify-center items-center gap-2 p-2">
-
-              <h1 className="text-4xl text-primary">{ mangaInfo.title }</h1>
               
               <p className=" text-subtitle"> { capituloActualx.title }</p>
               
@@ -156,6 +180,7 @@ export default function ViewerCap () {
 
               <Link
                 to={ capAnterior ? `/viewer/${mangaId}/${capAnterior.id}` : "#"}  // Cambiar despues por el id del capitulo anterior
+                //to={'#'}
                 className=" hover:text-accent hover:text-secondary"
               >
                 <div className="flex gap-2 items-center ">
@@ -172,6 +197,7 @@ export default function ViewerCap () {
               <Link
 
                 to={  capSiguiente ? `/viewer/${mangaId}/${capSiguiente.id}` : "#"}  // Cambiar despues por el id del capitulo anterior
+                //to={'#'}
                 className=" hover:text-accent hover:text-secondary"
               >
                 <div className="flex gap-2 items-center ">

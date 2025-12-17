@@ -1,29 +1,40 @@
 import MangaCard from "../../components/lobby/MangaCard";
-import { useEffect, useState } from "react";
-import type { Manga } from "../../types";
+import { getAllMangas } from "../../api";
+import { useQuery } from "@tanstack/react-query";
+
 
 export default function Lobby () {
 
-  const [ Mangas, setMangas ] = useState<Manga[]>() 
+  //const [ Mangas, setMangas ] = useState<Manga[]>() 
 
-  async function fetchMangas() {
-      const response = await fetch('./manga.json')
-      const data = await response.json()
+  const { isPending , isError , data , error } = useQuery({
+    queryKey: ['mangas'],
+    queryFn: getAllMangas,
+    retry: 0
+  })
 
-      if( data.error )  {
-          throw new Error( data.message || 'Something went wrong' )
-      }
+  if(isPending) return <div> Loading... </div>
+  if(isError) return <div> Error: llamado a API fallo </div>
 
-      setMangas( data.mangas )
-  }
 
-  useEffect(() => {
+  // async function fetchMangas() {
+  //     const response = await fetch('./manga.json')
+  //     const data = await response.json()
+
+  //     if( data.error )  {
+  //         throw new Error( data.message || 'Something went wrong' )
+  //     }
+
+  //     setMangas( data.mangas )
+  // }
+
+  // useEffect(() => {
       
-      fetchMangas()
+  //   fetchMangas()
 
-  }, [])
+  // }, [])
 
-  if ( !Mangas ) return <div> Loading... </div>
+  if ( !data ) return <div> Loading... </div>
 
   return (
     <>
@@ -35,14 +46,14 @@ export default function Lobby () {
 
       <div className=" grid  grid-cols-7 ">
 
-        { Mangas.map( ( manga ) => (
+        { data.map( ( manga ) => (
           
           <MangaCard
             key={ manga.id }
             manga={ manga }
           />
           
-        ))}
+        ))} 
 
       </div>
       

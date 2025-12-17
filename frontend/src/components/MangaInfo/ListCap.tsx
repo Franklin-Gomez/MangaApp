@@ -1,15 +1,24 @@
 // import { useEffect, useState } from "react"
 import { Link, useParams } from "react-router-dom"
-import type { MangaCapitulos } from "../../types"
+import { useQuery } from "@tanstack/react-query";
+import { getAllChapters } from "../../api";
 
-type ListCapProps = {
-    capitulos: MangaCapitulos
-}
-
-export default function ListCap ( { capitulos } : ListCapProps  ) {
+export default function ListCap ( ) {
 
     const pamra = useParams();
     const mangaId = pamra.MangaId;
+
+
+    const { isPending , isError , data , error } = useQuery({
+        queryKey: ['Chapters'],
+        queryFn: () => getAllChapters(  mangaId! ),
+        enabled: !!mangaId,
+        retry: 0
+    })
+
+    if( isPending ) return <div> "Cargando..."</div>
+    if( isError ) return <div> { (error as Error).message || "Error cargando los capitulos" } </div>
+
 
     // const [ mangas , setMangas ] =  useState<Manga[]>()
 
@@ -41,8 +50,8 @@ export default function ListCap ( { capitulos } : ListCapProps  ) {
             <div className=" space-y-4 max-h-[500px] overflow-y-auto pr-4 w-1/2 mx-auto">  {/* Contenedor de la Lista de Capitulos */}
             
                 { 
-                    capitulos.map( ( cap ) => (
-                        <div key={cap.id} className=" flex justify-between items-center p-4   bg-white/30 rounded transition-colors cursor-pointer">
+                    data.map( ( cap ) => (
+                        <div key={cap.id} className=" flex justify-between items-center p-4   bg-white/30 rounded transition-colors cursor-pointer hover:bg-white/80 hover:shadow-lg">
 
                             <div>
                                 <h3 className=" text-dialogue font-semibold"> { cap.title }</h3>
@@ -55,7 +64,7 @@ export default function ListCap ( { capitulos } : ListCapProps  ) {
 
                         </div>
                     ))
-                }
+                } 
 
             </div>
 
