@@ -69,7 +69,10 @@ export class MangaController {
                 return res.status(404).json({ message: 'Manga no Encontrado' });
             }
 
-            res.json({ ...mangaSnap.data() });
+            res.json({ 
+                id: mangaSnap.id,
+                ...mangaSnap.data() 
+            });
 
         } catch (error) {
             
