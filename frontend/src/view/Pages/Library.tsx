@@ -1,7 +1,11 @@
-import {  useEffect, useState } from "react"
-import type { Manga } from "../../types"
+import {  useState } from "react"
+import type { MangasType } from "../../types"
 import MangaCard from "../../components/lobby/MangaCard"
 import { useForm, type SubmitHandler } from "react-hook-form"
+import { useQuery } from "@tanstack/react-query"
+import { getAllMangas } from "../../api"    
+import { set } from "zod"
+
 
 type FormsInputs = {
     search: string
@@ -10,8 +14,8 @@ type FormsInputs = {
 
 export default function Library () {
 
-    const [Mangas , setMangas] = useState<Manga[]>()
-    const [filtermanga , setFilterManga] = useState<Manga[]>()
+    const [Mangas , setMangas] = useState<MangasType>()
+    const [filtermanga , setFilterManga] = useState<MangasType>()
 
     const { register, handleSubmit } = useForm<FormsInputs>({
         defaultValues : { 
@@ -20,40 +24,52 @@ export default function Library () {
         }
     })
 
-    async function fetchMangas () {
-        // Lógica para obtener la lista de mangas de la biblioteca del usuario
+    // async function fetchMangas () {
+    //     // Lógica para obtener la lista de mangas de la biblioteca del usuario
 
-        try {
+    //     try {
 
-            const response = await fetch('/public/manga.json')
-            const data = await response.json()
+    //         const response = await fetch('/public/manga.json')
+    //         const data = await response.json()
 
-            if( data.error ) { 
-                throw new Error(data.message || "Error al cargar la biblioteca")
-            }
+    //         if( data.error ) { 
+    //             throw new Error(data.message || "Error al cargar la biblioteca")
+    //         }
 
-            setMangas( data.mangas ) 
+    //         setMangas( data.mangas ) 
             
-        } catch (error) {
+    //     } catch (error) {
 
-            console.log( error )
+    //         console.log( error )
 
-        }
+    //     }
 
-    }
+    // }
 
-    useEffect(() => {   
-        fetchMangas()
-    },[])
+    // useEffect(() => {   
+    //     fetchMangas()
+    // },[])
+
+    const { data : AllMangas, isLoading, isError } = useQuery({
+        queryKey: ['AllMangas'],
+        queryFn: getAllMangas,
+        retry : 1
+    })
+
+    isLoading && console.log('Cargando mangas...')
+    isError && console.log('Error al cargar los mangas')
+
 
     const handleSearch : SubmitHandler<FormsInputs> = ( data ) => {
         const { search  } = data
 
-        const filteredMangas = Mangas?.filter( manga => 
+        const filteredMangas = AllMangas?.filter( manga => 
             manga.title.toLowerCase().includes( search.toLowerCase() )
         )
 
-        filteredMangas && ( setFilterManga( filteredMangas ) )  
+        console.log( filteredMangas )
+
+        setFilterManga( filteredMangas ) 
 
         // Lógica para ordenar los mangas según el criterio seleccionado
         //let sortedMangas = [...(filteredMangas || [])]
@@ -125,10 +141,10 @@ export default function Library () {
                 <main className="basis-2/3 grid grid-cols-4 gap-4 mt-4 "> 
 
                     { 
-                        (filtermanga && filtermanga.length > 0 ? filtermanga : Mangas)?.map((manga) => (
+                        (filtermanga && filtermanga.length > 0 ? filtermanga : AllMangas)?.map((manga) => (
                             <MangaCard 
-                            key={manga.id}
-                            manga={manga}
+                                key={manga.id}
+                                manga={manga}
                         /> ))
                     }
 

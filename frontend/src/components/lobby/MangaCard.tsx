@@ -1,8 +1,8 @@
 // import data from '../../manga.json'
 import { Link } from 'react-router-dom'
-import type { Manga } from '../../types'
+import type { MangaType } from '../../types'
 
-export default function MangaCard (  { manga }   : { manga: Manga } ) {
+export default function MangaCard (  { manga }   : { manga: MangaType } ) {
 
     return (
         <>
@@ -25,7 +25,7 @@ export default function MangaCard (  { manga }   : { manga: Manga } ) {
 
                             <div className="absolute left-0 top-0 w-full h-full  flex flex-col justify-between rounded  bg-black/80 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none group-hover:pointer-events-auto py-4">
                             
-                                <span className="text-white text-lg flex-grow overflow-auto px-4"></span>
+                                <span className="text-white text-lg flex-grow overflow-auto px-4">{manga.title}</span>
 
                                 <div className='flex justify-center gap-2 mt-2 '>
                                     <Link 

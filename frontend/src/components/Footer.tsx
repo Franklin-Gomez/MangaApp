@@ -9,7 +9,7 @@ export const Footer = () => {
             <div>
                 <ul className=" flex justify-around p-4 space-x-6">
 
-                    <li className="hover:text-accent hover:text-secondary"><a href="/biblioteca">Biblioteca</a></li>
+                    <li className="hover:text-accent hover:text-secondary"><a href="/library">Biblioteca</a></li>
 
                 </ul>
             </div>

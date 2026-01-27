@@ -6,7 +6,7 @@ export const createManga = async ( mangaData: any ) => {
 
     try {
 
-        const url = 'http://localhost:3000/api/mangas/create';
+        const url = `${import.meta.env.VITE_API_URL}/api/mangas/create`;
 
         const response = await axios.post( url );
 
@@ -33,7 +33,7 @@ export const getAllMangas = async () => {
 
     try {
 
-        const url = 'http://localhost:3000/api/mangas/getAll';
+        const url = `${import.meta.env.VITE_API_URL}/api/mangas/getAll`;
 
         const response = await axios.get( url );
 
@@ -59,7 +59,7 @@ export const getMangaById = async ( id: string ) => {
 
     try {
 
-        const url = `http://localhost:3000/api/mangas/getOneManga/${id}`;
+        const url = `${import.meta.env.VITE_API_URL}/api/mangas/getOneManga/${id}`;
 
         const response = await axios.get( url );
 
@@ -94,7 +94,7 @@ export const createChapter = async ( chapterData: any ) => {}
 
 export const getAllChapters = async  ( mangaId : string) => {
 
-    const url = `http://localhost:3000/api/chapters/${mangaId}/getAllChapter`;
+    const url = `${import.meta.env.VITE_API_URL}/api/chapters/${mangaId}/getAllChapter`;
 
     const response = await axios.get( url );
 
@@ -109,7 +109,7 @@ export const getAllChapters = async  ( mangaId : string) => {
 
 export const getChapterById = async ( { mangaId , chapterId  }  : { mangaId : string , chapterId : string}) => {
 
-    const url = `http://localhost:3000/api/chapters/${mangaId}/getOneChapter/${chapterId}`;
+    const url = `${import.meta.env.VITE_API_URL}/api/chapters/${mangaId}/getOneChapter/${chapterId}`;
 
     const response = await axios.get( url );
 

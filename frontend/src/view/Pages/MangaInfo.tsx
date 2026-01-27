@@ -106,9 +106,9 @@ export default function MangaInfo () {
                             <p className="mt-4 text-dialogue text-oscuro">En Publicacion</p>
 
                             <div>
-                                <button className=" mt-4 px-4 py-2 border  rounded shadow hover:shadow-lg transition">Leer Ahora</button>
-                                <button className=" mt-4 ml-4 px-4 py-2 border  rounded shadow hover:shadow-lg transition">Agregar a Favoritos</button>
-                                <button className=" mt-4 ml-4 px-4 py-2 border rounded shadow hover:shadow-lg transition">Ver Capitulos</button>
+                                <button className=" mt-4 ml-4 px-4 py-2 border rounded shadow hover:shadow-lg transition hover:cursor-pointer">Leer Ahora</button>
+                                <button className=" mt-4 ml-4 px-4 py-2 border rounded shadow hover:shadow-lg transition hover:cursor-pointer">Agregar a Favoritos</button>
+                                <button className=" mt-4 ml-4 px-4 py-2 border rounded shadow hover:shadow-lg transition hover:cursor-pointer">Ver Capitulos</button>
                             </div>
                         </div>
 
