@@ -4,7 +4,6 @@ import MangaCard from "../../components/lobby/MangaCard"
 import { useForm, type SubmitHandler } from "react-hook-form"
 import { useQuery } from "@tanstack/react-query"
 import { getAllMangas } from "../../api"    
-import { set } from "zod"
 
 
 type FormsInputs = {
@@ -14,7 +13,7 @@ type FormsInputs = {
 
 export default function Library () {
 
-    const [Mangas , setMangas] = useState<MangasType>()
+    //const [Mangas , setMangas] = useState<MangasType>()
     const [filtermanga , setFilterManga] = useState<MangasType>()
 
     const { register, handleSubmit } = useForm<FormsInputs>({

@@ -1,8 +1,8 @@
 import axios from 'axios';
-import { MangasSchema , MangaSchema, ChaptersSchema, ChapterSchema } from '../types';
+import { MangasSchema , MangaSchema, ChaptersSchema } from '../types';
 // ------------------------------------Manga API ------------------------------------
 
-export const createManga = async ( mangaData: any ) => {
+export const createManga = async () => {
 
     try {
 
@@ -82,15 +82,15 @@ export const getMangaById = async ( id: string ) => {
 }
 
 
-export const updateManga = async ( id: string, mangaData: any ) => {}
+export const updateManga = async (  ) => {}
 
 
-export const deleteManga = async ( id: string ) => {}
+export const deleteManga = async (  ) => {}
 
 
 // ------------------------------------Chapter API ------------------------------------
 
-export const createChapter = async ( chapterData: any ) => {}
+export const createChapter = async ( ) => {}
 
 export const getAllChapters = async  ( mangaId : string) => {
 
@@ -123,19 +123,19 @@ export const getChapterById = async ( { mangaId , chapterId  }  : { mangaId : st
 
 }
 
-export const updateChapter = async ( id: string, chapterData: any ) => {}
+export const updateChapter = async (  ) => {}
 
-export const deleteChapter = async ( id: string ) => {}
+export const deleteChapter = async (  ) => {}
 
 
 // ------------------------------------User API ------------------------------------
 
-export const createUser = async ( userData: any ) => {}
+export const createUser = async (  ) => {}
 
 export const getAllUsers = async () => {}
 
-export const getUserById = async ( id: string ) => {}
+export const getUserById = async (  ) => {}
 
-export const updateUser = async ( id: string, userData: any ) => {}
+export const updateUser = async ( ) => {}
 
-export const deleteUser = async ( id: string ) => {}
+export const deleteUser = async ( ) => {}

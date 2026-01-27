@@ -7,7 +7,7 @@ export default function Lobby () {
 
   //const [ Mangas, setMangas ] = useState<Manga[]>() 
 
-  const { isPending , isError , data , error } = useQuery({
+  const { isPending , isError , data  } = useQuery({
     queryKey: ['mangas'],
     queryFn: getAllMangas,
     retry: 0

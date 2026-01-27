@@ -14,7 +14,7 @@ export default function MangaInfo () {
     const { MangaId } = useParams<{ MangaId: string }>()
 
 
-    const { isPending , isError , data , error: queryError } = useQuery({
+    const {  data , error: queryError } = useQuery({
         queryKey: ['OneManga'],
         queryFn: () => getMangaById( MangaId! ),
         enabled: !!MangaId,
@@ -27,6 +27,10 @@ export default function MangaInfo () {
     }
 
     if( !MangaId  ) return <div> "Manga no encontrado"</div>
+    if( queryError && !error ) {
+        setError( (queryError as Error).message )
+        setLoading( false )
+    }
 
     // async function fetchManga () {
 
