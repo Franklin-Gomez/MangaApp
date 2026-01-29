@@ -10,8 +10,6 @@ export const createManga = async () => {
 
         const response = await axios.post( url );
 
-        console.log( response.data );
-
         const responseValidacion = MangasSchema.safeParse( response.data );   
 
         if( responseValidacion.success === false ) {
