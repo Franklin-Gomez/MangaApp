@@ -19,6 +19,7 @@ export default function Header() {
           <li className="hover:text-accent hover:text-secondary"><NavLink to="/library">Biblioteca</NavLink></li>
           <li className="hover:text-accent hover:text-secondary"><NavLink to="/perfile">Perfil</NavLink></li>
           <li className="hover:text-accent hover:text-secondary"><NavLink to="/login">Registrarse</NavLink></li>
+          <li className="hover:text-accent hover:text-secondary"><NavLink to="/admin">Admin</NavLink></li>
           <li className="hover:text-accent hover:text-secondary"><NavLink to="/cerrarsesion">Cerrar Sesion</NavLink></li>
 
         </ul>
