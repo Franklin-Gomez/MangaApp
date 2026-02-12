@@ -1,6 +1,7 @@
 import { IoIosAlert } from "react-icons/io";
 import { RiImageAddLine } from "react-icons/ri";
-import { useState , useRef , useEffect } from "react";
+import { useState , useRef , useEffect, type FormEventHandler } from "react";
+import { IoCloseCircleOutline } from "react-icons/io5";
 
 
 export const UploadManga = () => {
@@ -39,8 +40,17 @@ export const UploadManga = () => {
             document.removeEventListener("mousedown", handleClickOutside);
         }
 
-    }, [popoverRef]);
-    
+    }, [popoverRef]);    
+
+
+    const handleSubmitForm = ( e : React.FormEvent<HTMLFormElement> ) => { 
+        e.preventDefault()
+
+        const formData = new FormData(e.currentTarget)
+        const data = Object.fromEntries(formData.entries());
+
+        console.log( data )
+    }
 
     return (
         <div className="">  
@@ -58,7 +68,7 @@ export const UploadManga = () => {
             <div className="bg-white text-[#1d1d1F] max-w-[800px] p-[40px] my-[60px] mx-auto rounded-xl border border-[#D2D2D7] rounded-lgs">
 
 
-                <form className="">
+                <form className="" onSubmit={ handleSubmitForm } >
 
                     <div className=" grid grid-cols-[1fr_2fr] gap-6 space-y-4 p-4 mb-12 ">
 
@@ -97,6 +107,7 @@ export const UploadManga = () => {
                                     type="text" 
                                     className="w-full py-3 px-4 border border-[#D2D2D7] placeholder:text-[#B0B0B5]  rounded-lg" 
                                     placeholder="E.g. One Piece"
+                                    name="titulo"
                                 />
                             </div>
 
@@ -106,6 +117,7 @@ export const UploadManga = () => {
                                     type="text" 
                                     className="w-full py-3 px-4 border border-[#D2D2D7] placeholder:text-[#B0B0B5]  rounded-lg" 
                                     placeholder="E.g . Eiichiro Oda"
+                                    name="author"
                                 /> 
                             </div>
 
@@ -123,6 +135,29 @@ export const UploadManga = () => {
                                 <div className="w-full border border-[#D2D2D7] rounded-lg py-3 px-4 flex flex-wrap items-center gap-2 focus-within:ring-2 focus-within:ring-blue-500">
   
                                     {/* Tags */}
+
+                                    {generoSeleccionado.map( (genero , index) => (
+
+                                        <div className=" flex gap-1 bg-gray-100 text-gray-800 px-2 py-1 rounded-md text-sm ">
+
+                                            <span 
+                                                key={index}
+                                                className=""
+                                            >
+                                                {genero}
+                                            </span>
+
+                                            <IoCloseCircleOutline 
+                                                size={10}
+                                                className=" cursor-pointer"
+                                                onClick={ () => setGeneroSeleccionado( generoSeleccionado.filter( g => g != genero ))}
+                                            />
+
+                                        </div>
+
+                                    ))}
+
+
                                     {/* <span className="bg-gray-100 text-gray-800 px-2 py-1 rounded-md text-sm">
                                         Action
                                     </span>
@@ -161,22 +196,43 @@ export const UploadManga = () => {
 
                                             <div
                                                 className={` absolute mt-2 w-36 p-4 border border-[#D2D2D7] rounded-lg bg-white shadow-lg  transition-all duration-200 ease-out
-                                                    ${popOver
-                                                    ? "opacity-100 scale-100 translate-y-0 pointer-events-auto"
-                                                    : "opacity-0 scale-95 -translate-y-2 pointer-events-none"}
+                                                    ${popOver ? "opacity-100 scale-100 translate-y-0 pointer-events-auto" : "opacity-0 scale-95 -translate-y-2 pointer-events-none"}
                                                 `}
                                                
-                                            >
+                                            >   
+                                                
 
                                                 {generos.map((genero, index) => (
-                                                    <div
+                                                    // <div
+                                                    //     key={index}
+                                                    //     className="text-sm text-[#5a5a5b] hover:bg-gray-100 rounded-md cursor-pointer px-2 py-1"
+                                                    // >
+
+                                                    //     {genero}
+
+                                                    // </div>
+
+                                                    <button
                                                         key={index}
-                                                        className="text-sm text-[#5a5a5b] hover:bg-gray-100 rounded-md cursor-pointer px-2 py-1"
+                                                        type="button"
+                                                        value={genero}
+                                                        className="text-sm text-[#5a5a5b] hover:bg-gray-100 rounded-md cursor-pointer px-2 py-1 block hover:font-bold"
+                                                        //onClick={ () => setGeneroSeleccionado( [...generoSeleccionado , genero] ) }
+                                                        name="generos"
+                                                        onClick={ () => {
+                                                            // Evitar agregar generos duplicados
+                                                            if( !generoSeleccionado.includes(genero) ) {
+                                                                setGeneroSeleccionado( [...generoSeleccionado , genero] )
+                                                            } else { 
+                                                                setGeneroSeleccionado( generoSeleccionado.filter( g => g !== genero ) )
+
+                                                            }
+                                                        } }
                                                     >
 
-                                                        {genero}
-
-                                                    </div>
+                                                        {genero}       
+                                                            
+                                                    </button>
                                                 ))}
 
                                             </div>
@@ -195,6 +251,7 @@ export const UploadManga = () => {
                                 <textarea 
                                     className="w-full py-3 px-4 border border-[#D2D2D7] placeholder:text-[#B0B0B5]  rounded-lg h-24 resize-none" 
                                     placeholder="Escribe una breve descripcion del manga"
+                                    name="descripcion"
                                 />
                             </div>
 
