@@ -1,14 +1,15 @@
 import axios from 'axios';
-import { MangasSchema , MangaSchema, ChaptersSchema } from '../types';
+import { MangasSchema , MangaSchema, ChaptersSchema, type MangaFormType } from '../types';
 // ------------------------------------Manga API ------------------------------------
 
-export const createManga = async () => {
+export const createManga = async ( data : MangaFormType  ) => {
 
     try {
 
         const url = `${import.meta.env.VITE_API_URL}/api/mangas/create`;
 
-        const response = await axios.post( url );
+        console.log( url)
+        const response = await axios.post( url , data  );
 
         const responseValidacion = MangasSchema.safeParse( response.data );   
 

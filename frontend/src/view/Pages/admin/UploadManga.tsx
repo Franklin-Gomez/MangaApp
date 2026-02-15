@@ -1,7 +1,12 @@
 import { IoIosAlert } from "react-icons/io";
 import { RiImageAddLine } from "react-icons/ri";
-import { useState , useRef , useEffect, type FormEventHandler } from "react";
+import { useState , useRef , useEffect } from "react";
 import { IoCloseCircleOutline } from "react-icons/io5";
+import { useForm , type SubmitHandler } from "react-hook-form";
+import { set } from "zod";
+import type { MangaFormType } from "../../../types";
+import { createManga } from "../../../api";
+
 
 
 export const UploadManga = () => {
@@ -9,12 +14,26 @@ export const UploadManga = () => {
     const [ popOver , setPopOver]  =  useState<boolean>(false)
     const [ generoSeleccionado , setGeneroSeleccionado ] = useState<string[]>([])
 
+    const [ loading , setLoading ] = useState<boolean>( false )
+    const [ error , setError ] = useState<string | null>( null )
+
+    const { register , handleSubmit , formState : { errors }} = useForm<MangaFormType >({
+        defaultValues : {
+            title : "",
+            author : "",
+            genre : generoSeleccionado,
+            description : "",
+            coverUrl : ""
+        }
+    })
+
     const generos = [ "Action" , "Adventure" , "Comedy" , "Drama" , "Fantasy" , "Horror" , "Mystery" , "Romance" , "Sci-Fi" , "Slice of Life" , "Sports" , "Supernatural" , "Thriller" ]
     const popoverRef = useRef<HTMLDivElement | null>(null);
 
     const handleGenneroChange = () : void  => {
         setPopOver( !popOver )
     }
+
 
     // mi forma para cerrar el popooover
     // if( popOver && document.getElementById("popover-menu") ) {
@@ -42,14 +61,22 @@ export const UploadManga = () => {
 
     }, [popoverRef]);    
 
+    const onSubmit : SubmitHandler<MangaFormType > = async ( values ) => { 
 
-    const handleSubmitForm = ( e : React.FormEvent<HTMLFormElement> ) => { 
-        e.preventDefault()
+        values.genre = generoSeleccionado
+                
+        const resultado = await createManga( values )
 
-        const formData = new FormData(e.currentTarget)
-        const data = Object.fromEntries(formData.entries());
+        console.log( resultado )
 
-        console.log( data )
+        return
+
+        
+
+        // const formData = new FormData(e.currentTarget)
+        // const data = Object.fromEntries(formData.entries());
+
+        // console.log( data )
     }
 
     return (
@@ -68,10 +95,11 @@ export const UploadManga = () => {
             <div className="bg-white text-[#1d1d1F] max-w-[800px] p-[40px] my-[60px] mx-auto rounded-xl border border-[#D2D2D7] rounded-lgs">
 
 
-                <form className="" onSubmit={ handleSubmitForm } >
+                <form className=""  onSubmit={ handleSubmit( onSubmit )  } >
 
                     <div className=" grid grid-cols-[1fr_2fr] gap-6 space-y-4 p-4 mb-12 ">
 
+                        {/* Portada */}
                         <div className="">
                             <h2 className=" font-bold text-lg mb-2 "> Portada</h2>
 
@@ -100,6 +128,8 @@ export const UploadManga = () => {
                             </div>
                         </div>
 
+
+                        {/* Formulario de informacion del manga */}
                         <div className="space-y-6">
                             <div>
                                 <label className="block mb-2 font-bold text-lg">Titulo</label>
@@ -107,7 +137,7 @@ export const UploadManga = () => {
                                     type="text" 
                                     className="w-full py-3 px-4 border border-[#D2D2D7] placeholder:text-[#B0B0B5]  rounded-lg" 
                                     placeholder="E.g. One Piece"
-                                    name="titulo"
+                                    { ...register("title" , { required : "El titulo es requerido" }) }
                                 />
                             </div>
 
@@ -117,7 +147,7 @@ export const UploadManga = () => {
                                     type="text" 
                                     className="w-full py-3 px-4 border border-[#D2D2D7] placeholder:text-[#B0B0B5]  rounded-lg" 
                                     placeholder="E.g . Eiichiro Oda"
-                                    name="author"
+                                    { ...register("author" , { required : "El autor es requerido" }) }
                                 /> 
                             </div>
 
@@ -216,16 +246,25 @@ export const UploadManga = () => {
                                                         key={index}
                                                         type="button"
                                                         value={genero}
-                                                        className="text-sm text-[#5a5a5b] hover:bg-gray-100 rounded-md cursor-pointer px-2 py-1 block hover:font-bold"
+                                                        //className="text-sm text-[#5a5a5b] hover:bg-gray-100 rounded-md cursor-pointer px-2 py-1 block hover:font-bold"
                                                         //onClick={ () => setGeneroSeleccionado( [...generoSeleccionado , genero] ) }
-                                                        name="generos"
+                                                        { 
+                                                            ...( generoSeleccionado.includes(genero) ? 
+                                                                { className : "text-sm text-[#5a5a5b] hover:bg-gray-100 rounded-md cursor-pointer px-2 py-1 block font-bold" } : 
+                                                                { className : "text-sm text-[#5a5a5b] hover:bg-gray-100 rounded-md cursor-pointer px-2 py-1 block" } 
+                                                            ) 
+                                                        }
+
+                                                        {...register("genre" , { 
+                                                            minLength : 1 
+                                                        })}
+                                                        
                                                         onClick={ () => {
                                                             // Evitar agregar generos duplicados
                                                             if( !generoSeleccionado.includes(genero) ) {
                                                                 setGeneroSeleccionado( [...generoSeleccionado , genero] )
                                                             } else { 
                                                                 setGeneroSeleccionado( generoSeleccionado.filter( g => g !== genero ) )
-
                                                             }
                                                         } }
                                                     >
@@ -251,7 +290,8 @@ export const UploadManga = () => {
                                 <textarea 
                                     className="w-full py-3 px-4 border border-[#D2D2D7] placeholder:text-[#B0B0B5]  rounded-lg h-24 resize-none" 
                                     placeholder="Escribe una breve descripcion del manga"
-                                    name="descripcion"
+                                    
+                                    { ...register("description" , { required : "La descripcion es requerida" }) }
                                 />
                             </div>
 

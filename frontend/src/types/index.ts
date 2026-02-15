@@ -15,6 +15,16 @@ export const MangaSchema = z.object({
 
 export const MangasSchema = z.array(MangaSchema);
 
+export const MangaFormSchema = MangaSchema
+    .omit({ 
+        id: true, 
+        createdAt: true 
+    })
+;
+
+export type MangaFormType = z.infer<typeof MangaFormSchema>;
+    
+
 // export type MangaCapitulos = Array<{
 //     id: string;
 //     title: string; 
