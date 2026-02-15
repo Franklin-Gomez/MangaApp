@@ -69,10 +69,6 @@ export const UploadManga = () => {
 
         console.log( resultado )
 
-        return
-
-        
-
         // const formData = new FormData(e.currentTarget)
         // const data = Object.fromEntries(formData.entries());
 

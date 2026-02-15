@@ -8,16 +8,14 @@ export const createManga = async ( data : MangaFormType  ) => {
 
         const url = `${import.meta.env.VITE_API_URL}/api/mangas/create`;
 
-        console.log( url)
+        
         const response = await axios.post( url , data  );
-
-        const responseValidacion = MangasSchema.safeParse( response.data );   
-
-        if( responseValidacion.success === false ) {
-            throw new Error( response.data.message || 'Something went wrong' );
+;   
+        if( response.status === 500 ) {
+            throw new Error( response.data.message || 'Error respuesta de la API' );
         }
         
-        return responseValidacion.data;
+        return response.data;
         
     } catch (error) {
         
