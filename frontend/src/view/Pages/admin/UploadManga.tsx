@@ -5,7 +5,6 @@ import { IoCloseCircleOutline } from "react-icons/io5";
 import { useForm , type SubmitHandler } from "react-hook-form";
 import type { MangaFormType } from "../../../types";
 import { createManga } from "../../../api";
-import { set } from "zod";
 
 
 
@@ -30,6 +29,7 @@ export const UploadManga = () => {
     })
 
     const generos = [ "Action" , "Adventure" , "Comedy" , "Drama" , "Fantasy" , "Horror" , "Mystery" , "Romance" , "Sci-Fi" , "Slice of Life" , "Sports" , "Supernatural" , "Thriller" ]
+
     const popoverRef = useRef<HTMLDivElement | null>(null);
 
     const handleGenneroChange = () : void  => {
@@ -83,13 +83,21 @@ export const UploadManga = () => {
 
         if( !file ) return;
         const url = URL.createObjectURL( file )
+
         setPreviewImage( url )
     }
 
 
     const onSubmit : SubmitHandler<MangaFormType > = async ( values ) => { 
 
+        if(!previewImage) return
+
         values.genre = generoSeleccionado
+        //values.coverUrl = previewImage || ""
+        values.coverUrl = ""
+
+        console.log( values )
+        return;
                 
         const resultado = await createManga( values )
 
@@ -126,12 +134,23 @@ export const UploadManga = () => {
                             <h2 className=" font-bold text-lg mb-2 "> Portada</h2>
 
                             <div 
-                                className="bg-[#FAFAFA] border-2 border-dashed border-[#D2D2D7] py-[60px] px-[20px] rounded-xl h-70 flex flex-col items-center justify-center relative"
+                                className="bg-[#FAFAFA] border-2 border-dashed border-[#D2D2D7] py-[60px] px-[20px] rounded-xl h-80 flex flex-col items-center justify-center relative "
                             >
+
                                 <RiImageAddLine
                                     size={50}
-                                    className="text-[#B0B0B5] mx-auto mb-4"
+                                    className="text-[#B0B0B5] mx-auto "
                                 />
+
+                                { previewImage  &&                                 
+                                
+                                    <img
+                                        src={previewImage}
+                                        alt="previewImage"
+                                        className="w-full rounded-lg border"
+                                    /> 
+                                    
+                                }   
 
                                 <input
                                     type="file"
@@ -139,25 +158,19 @@ export const UploadManga = () => {
                                     className=" absolute opacity-0 w-full h-full cursor-pointer"
                                     { ...register("coverUrl" , 
                                         { 
-                                            required : "La portada es requerida" ,
+                                            //validate: (files) => files && files.length > 0 || "La portada es requerida" ,
                                             onChange : (e ) => handleImageChange(e)
                                         }
                                     )}
+
+                                    // { ...errors.coverUrl && 
+                                    //    ( <p className="text-red-500 text-sm mt-1">{ errors.coverUrl.message }</p> )
+                                    // }
                                 />
-                                
-                                
-                                
-                                <p className="text-[#B0B0B5] text-center"> Agregar Portada</p>
 
-                                {previewImage && (
-                                    <img
-                                        src={previewImage}
-                                        alt="previewImage"
-                                        className="w-48 rounded-lg border"
-                                    />
-                                )}
+                            </div>                      
 
-                            </div>
+                            <p className="text-[#B0B0B5] text-center"> Agregar Portada</p>
 
 
                             <div className="flex items-center justify-center space-x-2 mt-4 text-sm text-[#5a5a5b]">
@@ -181,7 +194,7 @@ export const UploadManga = () => {
                                     type="text" 
                                     className="w-full py-3 px-4 border border-[#D2D2D7] placeholder:text-[#B0B0B5]  rounded-lg" 
                                     placeholder="E.g. One Piece"
-                                    { ...register("title" , { required : "El titulo es requerido" }) }
+                                    { ...register("title" , { required : "El titulo es requerido" })}
                                 />
                             </div>
 
@@ -191,7 +204,7 @@ export const UploadManga = () => {
                                     type="text" 
                                     className="w-full py-3 px-4 border border-[#D2D2D7] placeholder:text-[#B0B0B5]  rounded-lg" 
                                     placeholder="E.g . Eiichiro Oda"
-                                    { ...register("author" , { required : "El autor es requerido" }) }
+                                    { ...register("author" , { required : "El autor es requerido" })}
                                 /> 
                             </div>
 
@@ -212,7 +225,9 @@ export const UploadManga = () => {
 
                                     {generoSeleccionado.map( (genero , index) => (
 
-                                        <div className=" flex gap-1 bg-gray-100 text-gray-800 px-2 py-1 rounded-md text-sm ">
+                                        <div 
+                                            key={index} 
+                                            className=" flex gap-1 bg-gray-100 text-gray-800 px-2 py-1 rounded-md text-sm ">
 
                                             <span 
                                                 key={index}
@@ -335,7 +350,9 @@ export const UploadManga = () => {
                                     className="w-full py-3 px-4 border border-[#D2D2D7] placeholder:text-[#B0B0B5]  rounded-lg h-24 resize-none" 
                                     placeholder="Escribe una breve descripcion del manga"
                                     
-                                    { ...register("description" , { required : "La descripcion es requerida" }) }
+                                    { ...register("description" , 
+                                       { required : "La descripcion es requerida" 
+                                    })}
                                 />
                             </div>
 
