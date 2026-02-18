@@ -3,9 +3,9 @@ import { RiImageAddLine } from "react-icons/ri";
 import { useState , useRef , useEffect } from "react";
 import { IoCloseCircleOutline } from "react-icons/io5";
 import { useForm , type SubmitHandler } from "react-hook-form";
-import { set } from "zod";
 import type { MangaFormType } from "../../../types";
 import { createManga } from "../../../api";
+import { set } from "zod";
 
 
 
@@ -16,6 +16,8 @@ export const UploadManga = () => {
 
     const [ loading , setLoading ] = useState<boolean>( false )
     const [ error , setError ] = useState<string | null>( null )
+
+    const [ previewImage , setPreviewImage ] = useState<string | null>( null )
 
     const { register , handleSubmit , formState : { errors }} = useForm<MangaFormType >({
         defaultValues : {
@@ -61,6 +63,30 @@ export const UploadManga = () => {
 
     }, [popoverRef]);    
 
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => { 
+
+        const file = e.target.files?.[0];  
+
+        // si se subio imagen
+        // if (file) {
+        //     const reader = new FileReader();
+
+        //     console.log( reader )
+
+        //     // reader.onloadend = () => {
+        //     //     setPreviewImage( reader.result as string );
+        //     // }
+
+        //     // reader.readAsDataURL(file);
+
+        // }
+
+        if( !file ) return;
+        const url = URL.createObjectURL( file )
+        setPreviewImage( url )
+    }
+
+
     const onSubmit : SubmitHandler<MangaFormType > = async ( values ) => { 
 
         values.genre = generoSeleccionado
@@ -100,14 +126,36 @@ export const UploadManga = () => {
                             <h2 className=" font-bold text-lg mb-2 "> Portada</h2>
 
                             <div 
-                                className="bg-[#FAFAFA] border-2 border-dashed border-[#D2D2D7] py-[60px] px-[20px] rounded-xl h-70 flex flex-col items-center justify-center"
+                                className="bg-[#FAFAFA] border-2 border-dashed border-[#D2D2D7] py-[60px] px-[20px] rounded-xl h-70 flex flex-col items-center justify-center relative"
                             >
                                 <RiImageAddLine
-                                    size={40}
+                                    size={50}
                                     className="text-[#B0B0B5] mx-auto mb-4"
                                 />
+
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    className=" absolute opacity-0 w-full h-full cursor-pointer"
+                                    { ...register("coverUrl" , 
+                                        { 
+                                            required : "La portada es requerida" ,
+                                            onChange : (e ) => handleImageChange(e)
+                                        }
+                                    )}
+                                />
+                                
+                                
                                 
                                 <p className="text-[#B0B0B5] text-center"> Agregar Portada</p>
+
+                                {previewImage && (
+                                    <img
+                                        src={previewImage}
+                                        alt="previewImage"
+                                        className="w-48 rounded-lg border"
+                                    />
+                                )}
 
                             </div>
 
