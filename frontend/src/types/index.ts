@@ -6,11 +6,15 @@ export const MangaSchema = z.object({
     author: z.string(),
     genre: z.array(z.string()),
     description: z.string(),    
-    coverUrl: z.string(),
+    coverUrl: z.string().optional(),
     createdAt: z.object({
         seconds: z.number(),
         nanoseconds: z.number()
-    })
+    }),
+    coverFile:  z
+        .instanceof(FileList)
+        .refine(files => files.length === 1, "La portada es requerida")
+        .optional(), // Agrega esta línea para incluir coverFile en el esquema
 })
 
 export const MangasSchema = z.array(MangaSchema);

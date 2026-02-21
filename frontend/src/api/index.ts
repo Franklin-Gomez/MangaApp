@@ -2,7 +2,7 @@ import axios from 'axios';
 import { MangasSchema , MangaSchema, ChaptersSchema, type MangaFormType } from '../types';
 // ------------------------------------Manga API ------------------------------------
 
-export const createManga = async ( data : MangaFormType  ) => {
+export const createManga = async ( data : FormData  ) => {
 
     try {
 

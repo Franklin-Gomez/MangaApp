@@ -24,7 +24,6 @@ export const UploadManga = () => {
             author : "",
             genre : generoSeleccionado,
             description : "",
-            coverUrl : ""
         }
     })
 
@@ -66,21 +65,6 @@ export const UploadManga = () => {
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => { 
 
         const file = e.target.files?.[0];  
-
-        // si se subio imagen
-        // if (file) {
-        //     const reader = new FileReader();
-
-        //     console.log( reader )
-
-        //     // reader.onloadend = () => {
-        //     //     setPreviewImage( reader.result as string );
-        //     // }
-
-        //     // reader.readAsDataURL(file);
-
-        // }
-
         if( !file ) return;
         const url = URL.createObjectURL( file )
 
@@ -90,18 +74,30 @@ export const UploadManga = () => {
 
     const onSubmit : SubmitHandler<MangaFormType > = async ( values ) => { 
 
+        
         if(!previewImage) return
+        if(!values.coverFile) return 
+        
+        const file = values.coverFile[0]
 
+        if( !file ) return "imagen requerida"
+        
         values.genre = generoSeleccionado
+
+
         //values.coverUrl = previewImage || ""
-        values.coverUrl = ""
+        const formData = new FormData();
+        formData.append("title", values.title);
+        formData.append("author", values.author);
+        formData.append("description", values.description);
+        formData.append("genre", JSON.stringify(generoSeleccionado));
+        formData.append("coverUrl", file ); // 👈 MISMO NOMBRE DEL BACKEND
 
-        console.log( values )
-        return;
+        for(const pair of formData.entries()) {
+            console.log( pair[0] , pair[1] )
+        }
                 
-        const resultado = await createManga( values )
-
-        console.log( resultado )
+        const resultado = await createManga( formData )
 
         // const formData = new FormData(e.currentTarget)
         // const data = Object.fromEntries(formData.entries());
@@ -156,7 +152,7 @@ export const UploadManga = () => {
                                     type="file"
                                     accept="image/*"
                                     className=" absolute opacity-0 w-full h-full cursor-pointer"
-                                    { ...register("coverUrl" , 
+                                    { ...register("coverFile" , 
                                         { 
                                             //validate: (files) => files && files.length > 0 || "La portada es requerida" ,
                                             onChange : (e ) => handleImageChange(e)
