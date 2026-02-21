@@ -13,6 +13,6 @@ export const app = express();
 app.use( cors() );
 app.use( express.json() );
 
-app.use('/api/mangas',  MangaRoute );
+app.use('/api/mangas',   MangaRoute );
 app.use('/api/users',  UserRoute );
 app.use('/api/chapters',  ChapterRoute );

@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { getFirestore, collection, doc, addDoc, updateDoc, deleteDoc, getDocs , getDoc , Timestamp, query , where, writeBatch } from "firebase/firestore";
 import { db }  from '../db/firebaseConfig';
+import { uploadImageToCloudinary } from '../services/cloudinaryService';
 
 export class MangaController {
 
@@ -8,12 +9,20 @@ export class MangaController {
 
         try {
 
-            const { title, author, genre, description, coverUrl } = req.body;
+            const { title, author, genre, description } = req.body;
 
+            if(!req.file) {
+                return res.status(400).json({ message: 'No se proporcionó una imagen de portada' });
+            }
+            
+            // subit la imagen y retorna url
+            const coverUrl = await uploadImageToCloudinary(req.file.path);
+
+            // Crear un nuevo documento en la colección "Manga" con los datos del manga
             const mangaRef = await addDoc(collection( db , 'Manga'),{
                 title: title,
                 author: author,
-                genre: genre,
+                genre: JSON.parse(genre), // Convertir el string JSON a un array
                 description: description,
                 coverUrl: coverUrl,
                 createdAt: Timestamp.now() 
@@ -23,7 +32,8 @@ export class MangaController {
                 return res.status(500).json({ message: 'Error al Crear Manga' });
             }
 
-            return res.status(201).json({ message: 'Manga creado' });
+            // Retornar una respuesta exitosa con el ID del nuevo manga
+            return res.status(200).json({ message: 'Manga creado', id: mangaRef.id });
 
         } catch (error) {
 
