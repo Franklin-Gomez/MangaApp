@@ -91,11 +91,7 @@ export const UploadManga = () => {
         formData.append("author", values.author);
         formData.append("description", values.description);
         formData.append("genre", JSON.stringify(generoSeleccionado));
-        formData.append("coverUrl", file ); // 👈 MISMO NOMBRE DEL BACKEND
-
-        for(const pair of formData.entries()) {
-            console.log( pair[0] , pair[1] )
-        }
+        formData.append("coverUrl", file ); // MISMO NOMBRE DEL BACKEND - middleware
                 
         const resultado = await createManga( formData )
 

@@ -7,6 +7,7 @@ import ViewerCapDashboard from './view/viewerCapDashboard'
 import Library from './view/Pages/Library'
 import Login  from './view/Pages/Login'
 import { UploadManga } from './view/Pages/admin/UploadManga'
+import { UploadChapters } from './view/Pages/admin/UploadChapters'
 
 export default function Router() {
   return (
@@ -18,7 +19,8 @@ export default function Router() {
           <Route path="/library/:MangaId" element={<MangaInfo/>} />
           <Route path="/library" element={<Library/>} />
           <Route path="/login" element={<Login/>} />
-          <Route path="/upload" element={<UploadManga/> } />
+          <Route path="/admin/upload" element={<UploadManga/> } />
+          <Route path="/admin/uploadChapters/:mangaId" element={<UploadChapters/>} />
           
         </Route>
 

@@ -4,6 +4,7 @@ import ListCap from "../../components/MangaInfo/ListCap"
 import { useParams } from "react-router-dom"
 import { useQuery } from "@tanstack/react-query"
 import { getMangaById } from "../../api"
+import { Link } from "react-router-dom"
 
 export default function MangaInfo () { 
 
@@ -112,7 +113,14 @@ export default function MangaInfo () {
                             <div>
                                 <button className=" mt-4 ml-4 px-4 py-2 border rounded shadow hover:shadow-lg transition hover:cursor-pointer">Leer Ahora</button>
                                 <button className=" mt-4 ml-4 px-4 py-2 border rounded shadow hover:shadow-lg transition hover:cursor-pointer">Agregar a Favoritos</button>
-                                <button className=" mt-4 ml-4 px-4 py-2 border rounded shadow hover:shadow-lg transition hover:cursor-pointer">Ver Capitulos</button>
+
+
+                                <Link 
+                                    className=" mt-4 ml-4 px-4 py-2 border rounded shadow hover:shadow-lg transition hover:cursor-pointer"
+                                    to={`/admin/uploadChapters/${mangaInfo.id}`}
+
+                                >Agregar Capitulos</Link>
+                                
                             </div>
                         </div>
 
