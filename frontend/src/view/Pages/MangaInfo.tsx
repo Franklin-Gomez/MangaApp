@@ -13,10 +13,9 @@ export default function MangaInfo () {
     //const [error, setError] = useState<string | null>(null)
 
     const { MangaId } = useParams<{ MangaId: string }>()
-    const { mangas , setMangas } = useStore() 
+    const { manga , setManga } = useStore() 
 
-    const  manga = mangas.find( (manga) => manga.id === MangaId )
-
+    //const  manga = mangas.find( (manga) => manga.id === MangaId )
 
     const {  data , error: queryError , isLoading } = useQuery({
         queryKey: ['OneManga' , MangaId],
@@ -25,9 +24,10 @@ export default function MangaInfo () {
         retry: 0
     })
 
+
     useEffect(() => {
-        if (data && mangas.length === 0) {
-            setMangas( [data] )
+        if ( !manga && data ) {
+            setManga( data )
         }
     }, [data])
 
@@ -71,7 +71,7 @@ export default function MangaInfo () {
 
     //     fetchManga() 
         
-    // },[mangaId])
+    // },[mangaId]
     
     if ( isLoading ) return <div> "Cargando..."</div>
     if ( queryError ) return <div> Error </div>

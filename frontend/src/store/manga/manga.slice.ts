@@ -6,8 +6,7 @@ export interface MangaSlice {
   manga: MangaType | null
   addManga : ( manga : MangaType ) => void
   setManga: ( manga: MangaType | null ) => void
-  setMangas: (manga: MangaType[]) => void
-  selectedManga: ( manga: MangaType ) => void
+  setMangas: (mangas: MangaType[]) => void
 }
 
 export const createMangaSlice : StateCreator<MangaSlice> = ( set ) => ({ 
@@ -26,15 +25,11 @@ export const createMangaSlice : StateCreator<MangaSlice> = ( set ) => ({
     setMangas: ( mangas ) => 
         set({ 
             mangas 
-        }),
+    }),
 
     setManga  : ( manga ) =>
         set({
             manga
-        }),
+    }),
 
-    selectedManga: ( manga ) => 
-        set({    
-            manga
-        })
 })
