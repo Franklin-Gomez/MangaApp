@@ -1,15 +1,22 @@
 // import data from '../../manga.json'
 import { Link } from 'react-router-dom'
 import type { MangaType } from '../../types'
+import { useStore } from '../../store'
 
 export default function MangaCard (  { manga }   : { manga: MangaType } ) {
+
+    const { selectedManga } = useStore()
+
+    const handleSelectManga = () => {
+        selectedManga( manga )
+    }
 
     return (
         <>
 
             <div className="">
    
-                <div className=" ">
+                <div className="">
                     
                     <div className='flex flex-col items-center text-center text-dialogue '>
 
@@ -30,7 +37,8 @@ export default function MangaCard (  { manga }   : { manga: MangaType } ) {
                                 <div className='flex justify-center gap-2 mt-2 '>
                                     <Link 
                                         to={`/library/${manga.id}`}
-                                        className="bg-blue-500 text-white px-4 py-2 rounded m-2 hover:bg-blue-600 transition-colors" 
+                                        className="bg-blue-500 text-white px-4 py-2 rounded m-2 hover:bg-blue-600 transition-colors"
+                                        onClick={handleSelectManga} 
                                     >Leer</Link>
                                     <button className="bg-green-500 text-white px-4 py-2 rounded m-2 hover:bg-green-600 transition-colors">Agregar</button>
                                 </div>
