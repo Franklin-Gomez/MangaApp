@@ -84,7 +84,6 @@ export default function MangaInfo () {
         <>
             <div className="relative ">
 
-              
                 <div 
                     className={` relative bg-cover bg-[center_25%] h-96 w-full z-0`}
                     style={{ backgroundImage: `url('${manga.coverUrl}')` }}
@@ -134,7 +133,6 @@ export default function MangaInfo () {
                                 
                             </div>
                         </div>
-
 
                     </div>
 

@@ -2,12 +2,76 @@ import { IoIosCloudUpload  } from "react-icons/io";
 import { IoAdd } from "react-icons/io5"
 import { FaTrashCan } from "react-icons/fa6";
 import { LuUpload } from "react-icons/lu";
+import { useStore } from "../../../store";
+import { useForm } from "react-hook-form";
+import { useState } from "react";
+import { set } from "zod";
 
 
 export const UploadChapters = () => {
 
+    const { manga , chapters  } = useStore()
+    const { register, handleSubmit  } = useForm()
+    const [ previewImage , setPreviewImage  ] = useState<string[]>([])
+
+    if( !manga ) return <div> "Manga no encontrado"</div>
+    if( !chapters ) return <div> "Cargando..."</div>
+
+    const imagenesPreview = [] as string[]
+    const ultimoCapitulo = chapters.length > 0 ? chapters[chapters.length - 1 ].number : 0 ;
+    const proximoCapitulo = ultimoCapitulo + 1
+
+    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        // const files = event.target.files;
+        // if (!files) return;
+
+        // capitulosPreview.push(...files)
+
+        // capitulosPreview.forEach( (file) => {
+        //     const url = URL.createObjectURL(file)
+
+        //     // setPreviewImage(url)
+
+        //     imagenesPreview.push(url)
+
+        // })
+
+        const filesArray = Array.from(event.target.files || [])
+
+        const urls = filesArray.map( ( file) =>  URL.createObjectURL(file))
+
+        setPreviewImage(urls)
+
+        // files.map(  (file) => {
+        //     console.log( file ) 
+        // })
+
+
+
+        // console.log()
+
+        
+        // capitulosPreview.forEach( (file) => {
+        //     console.log("Archivo seleccionado:", file.name);
+        // })
+
+    
+
+        // const url = URL.createObjectURL(files[0])
+        
+        // setPreviewImage(url)
+    };
+
+    if( imagenesPreview.length < 0 ) return;
+
+    const onSubmit = (data: any) => {
+        console.log("Datos del formulario:", data);
+    }
+    
     return (   
-        <>
+        <form 
+            onSubmit={handleSubmit(onSubmit)}
+        >
             <div className="max-w-5xl mx-auto space-y-10">
             
                 <div className="p-10 bg-white rounded-xl shadow-sm border border-slate-200 mt-12"> 
@@ -20,7 +84,7 @@ export const UploadChapters = () => {
                         <div className="h-full w-full overflow-hidden rounded-lg">
 
                             <img
-                                src="/public/portada/OnePiece.jpg"
+                                src={manga.coverUrl}
                                 alt="Portada del Manga"
                                 className="h-full object-contain"
                             />
@@ -30,9 +94,9 @@ export const UploadChapters = () => {
 
                         <div className="space-y-4">
 
-                            <h2 className="text-2xl font-bold ">One Piece</h2>
-                            <p className="text-gray-600 "> Agregando Capitulo : <span className="text-[#0071E3] hover:text-[#0056B3] cursor-pointer"> 54 </span> </p>
-                            <p className="text-gray-600 "> Ultimo Capitulo : <span className="text-[#0071E3] hover:text-[#0056B3] cursor-pointer"> 53 </span> </p>
+                            <h2 className="text-2xl font-bold ">{manga?.title}</h2>
+                            <p className="text-gray-600 "> Agregando Capitulo : <span className="text-[#0071E3] hover:text-[#0056B3] cursor-pointer"> { proximoCapitulo } </span> </p>
+                            <p className="text-gray-600 "> Ultimo Capitulo : <span className="text-[#0071E3] hover:text-[#0056B3] cursor-pointer"> { ultimoCapitulo } </span> </p>
 
                         </div>
 
@@ -43,7 +107,11 @@ export const UploadChapters = () => {
 
                 {/* drop zone para subir Capitulo */}
 
-                <div className="border-2 border-dashed border-slate-300 bg-slate-50 hover:border-[#0071E3] hover:bg-blue-100/20  rounded-2xl flex flex-col items-center justify-center py-16 transition-colors">
+                <label 
+                    htmlFor="fileInput" 
+                    className="border-2 border-dashed border-slate-300 bg-slate-50 hover:border-[#0071E3] hover:bg-blue-100/20  rounded-2xl flex flex-col items-center justify-center py-16 transition-colors hover:cursor-pointer "
+
+                >
 
                     <div className="bg-blue-200  p-4  rounded-full mb-4">
                         <IoIosCloudUpload
@@ -53,8 +121,17 @@ export const UploadChapters = () => {
 
                     <p className=" mb-2 font-bold">Arrastra y suelta las imágenes del capítulo aquí, o haz clic para seleccionar los archivos.</p>
                     <p className="mb-6 text-gray-600">  soporta JPG,PNG, WEBP. <span className="font-bold" > (5mb max por pagina)  </span></p>
-                    <input type="file" className="hidden" id="fileInput" multiple />
-                    <label htmlFor="fileInput" className="cursor-pointer  flex justify-center items-center  px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+
+                    <input 
+                        type="file" 
+                        className="hidden" 
+                        id="fileInput" 
+                        multiple
+                        accept="image/jpeg, image/png, image/webp"
+                        onChange={(e) => handleFileChange(e)} 
+                    />
+
+                    <div  className="cursor-pointer  flex justify-center items-center  px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
 
                         <IoAdd
                             className="text-white font-bold"
@@ -62,11 +139,10 @@ export const UploadChapters = () => {
 
                         <span className="ml-2">
                             Seleccionar Archivos
-
                         </span>
-                    </label>    
+                    </div>    
 
-                </div>
+                </label>
 
 
                 {/* Grilla de imagenes */}
@@ -80,11 +156,23 @@ export const UploadChapters = () => {
 
                     <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 mt-8">
 
-                        <div className="flex items-center justify-center aspect-[3/4] bg-slate-100 rounded-md border-2 border-slate-300 border-dashed overflow-hidden group ">
-              
-                            <p className="text-gray-400"> Pagina 1 </p> 
-                          
-                        </div>
+                        {
+                            previewImage.length > 0 && (
+                                
+                                previewImage.map(image => (
+
+                                    <div className="flex items-center justify-center aspect-[3/4] bg-slate-100 rounded-md border-2 border-slate-300 border-dashed overflow-hidden ">
+
+                                        <img 
+                                            src={image} 
+                                            alt="Vista previa" 
+                                            className="w-full h-full object-cover"
+                                        /> 
+
+                                    </div>
+                                ))
+                            )
+                        }
 
                     </div>
 
@@ -127,8 +215,6 @@ export const UploadChapters = () => {
                 </div>
 
             </div>
-        </>
-
-        
+        </form>
     )
 }

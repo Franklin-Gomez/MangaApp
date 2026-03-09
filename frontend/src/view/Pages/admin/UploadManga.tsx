@@ -13,8 +13,8 @@ export const UploadManga = () => {
     const [ popOver , setPopOver]  =  useState<boolean>(false)
     const [ generoSeleccionado , setGeneroSeleccionado ] = useState<string[]>([])
 
-    const [ loading , setLoading ] = useState<boolean>( false )
-    const [ error , setError ] = useState<string | null>( null )
+    // const [ loading , setLoading ] = useState<boolean>( false )
+    // const [ error , setError ] = useState<string | null>( null )
 
     const [ previewImage , setPreviewImage ] = useState<string | null>( null )
 

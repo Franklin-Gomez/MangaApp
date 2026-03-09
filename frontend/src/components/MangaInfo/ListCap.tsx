@@ -2,19 +2,29 @@
 import { Link, useParams } from "react-router-dom"
 import { useQuery } from "@tanstack/react-query";
 import { getAllChapters } from "../../api";
+import { useStore } from "../../store";
+import { useEffect } from "react";
 
 export default function ListCap ( ) {
 
     const pamra = useParams();
-    const mangaId = pamra.MangaId;
+    const mangaId = pamra.MangaId
 
+    const { setChapters } = useStore()
 
-    const { isPending , isError , data , error } = useQuery({
+    const { isPending , isError , data : chapters , error } = useQuery({
         queryKey: ['Chapters'],
         queryFn: () => getAllChapters(  mangaId! ),
         enabled: !!mangaId,
         retry: 0
     })
+
+    useEffect(() => {
+        if( chapters ) {
+            setChapters( chapters )
+        }
+    }, [chapters])
+
 
     if( isPending ) return <div> "Cargando..."</div>
     if( isError ) return <div> { (error as Error).message || "Error cargando los capitulos" } </div>
@@ -50,7 +60,7 @@ export default function ListCap ( ) {
             <div className=" space-y-4 max-h-[500px] overflow-y-auto pr-4 w-1/2 mx-auto">  {/* Contenedor de la Lista de Capitulos */}
             
                 { 
-                    data.map( ( cap ) => (
+                    chapters.map( ( cap ) => (
                         <div key={cap.id} className=" flex justify-between items-center p-4   bg-white/30 rounded transition-colors cursor-pointer hover:bg-white/80 hover:shadow-lg">
 
                             <div>
@@ -58,10 +68,9 @@ export default function ListCap ( ) {
                                 <p className=" text-sm text-gray-300">Publicado el: 2024-01-01</p>
                             </div>
 
-                            <div>
-                                <Link to={`/viewer/${mangaId}/${cap.id}`} className=" bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">Leer</Link>   
-                            </div>
-
+                            
+                            <Link to={`/viewer/${mangaId}/${cap.id}`} className=" bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">Leer</Link>   
+                            
                         </div>
                     ))
                 } 
