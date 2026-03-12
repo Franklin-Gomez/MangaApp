@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { getFirestore, collection, doc, addDoc, updateDoc, deleteDoc, getDocs , getDoc , Timestamp, query , where, writeBatch } from "firebase/firestore";
+import { getFirestore, collection, doc, addDoc, updateDoc, getDocs , getDoc , Timestamp, query , where, writeBatch } from "firebase/firestore";
 import { db }  from '../db/firebaseConfig';
 import { uploadImageToCloudinary } from '../services/cloudinaryService';
 

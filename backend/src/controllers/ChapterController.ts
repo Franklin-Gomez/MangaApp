@@ -8,14 +8,18 @@ export class ChapterController {
         
         try {
 
-            const { mangaId, title, number, pages } = req.body;
+            const { mangaId, title, chapterNumber } = req.body;
+            const pages = req.files; // Aquí asumimos que las páginas se envían como un archivo, ajusta según tu implementación
+
+            console.log("Received chapter data: ", mangaId, title, chapterNumber , pages );
+
+            return res.status(201).json({ message: 'Capitulo creado' });
 
             // Here you would typically add code to save the chapter to your database
-            // For demonstration, we'll just return the received data   
             const newChapter = await addDoc( collection( db ,  "chapters" ) , { 
                 mangaId, 
                 title, 
-                number, 
+                chapterNumber, 
                 pages 
             });
 
