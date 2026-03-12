@@ -149,10 +149,12 @@ export const getAllChapters = async  ( mangaId : string) => {
 
     const response = await axios.get( url );
 
+    console.log( response.data )
+
     const responseValidacion = ChaptersSchema.safeParse( response.data );
 
     if( responseValidacion.success === false ) {
-        throw new Error( response.data.message || 'Something went wrong' );
+        throw new Error( "Error en la forma del capitulo" );
     }
 
     return responseValidacion.data;

@@ -19,7 +19,7 @@ export const UploadChapters = () => {
     if( !manga ) return <div> "Manga no encontrado"</div>
     if( !chapters ) return <div> "Cargando..."</div>
 
-    const ultimoCapitulo = chapters.length > 0 ? chapters[chapters.length - 1 ].number : 0 ;
+    const ultimoCapitulo = chapters.length > 0 ? chapters[chapters.length - 1 ].chapterNumber : 0 ;
     const proximoCapitulo = ultimoCapitulo + 1
     
     // Generar URLs de vista previa para cada archivo seleccionado, guardamos en state

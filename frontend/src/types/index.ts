@@ -54,10 +54,10 @@ export const ChapterSchema = z.object({
     id: z.string(), 
     mangaId: z.string(),
     title: z.string(),
-    number: z.number(),
+    chapterNumber: z.number(),
     pages: z.array(z.object({
         id: z.number(),
-        paginaUrl: z.string()
+        url: z.string()
     }))
 });
 
