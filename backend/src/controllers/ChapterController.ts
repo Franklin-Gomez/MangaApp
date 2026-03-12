@@ -5,22 +5,24 @@ import { db }  from '../db/firebaseConfig';
 export class ChapterController {
 
     static async createChapter (req : Request , res : Response) { 
+
+        const urls : { id: number; url: string }[] = [];
         
         try {
 
             const { mangaId, title, chapterNumber } = req.body;
-            const pages = req.files; // Aquí asumimos que las páginas se envían como un archivo, ajusta según tu implementación
 
-            console.log("Received chapter data: ", mangaId, title, chapterNumber , pages );
-
-            return res.status(201).json({ message: 'Capitulo creado' });
+            req.files.forEach( ( file : any , index : number ) => {
+                const url : { id: number; url: string } = { id : index + 1, url: file.path };
+                urls.push( url );
+            });
 
             // Here you would typically add code to save the chapter to your database
             const newChapter = await addDoc( collection( db ,  "chapters" ) , { 
                 mangaId, 
                 title, 
-                chapterNumber, 
-                pages 
+                chapterNumber : Number(chapterNumber) , 
+                pages : urls
             });
 
             if( !newChapter.id ) {
@@ -36,7 +38,7 @@ export class ChapterController {
 
         }
 
-    }
+    }   
 
     static async getAllChapters (req : Request , res : Response) {
         
