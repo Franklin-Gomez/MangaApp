@@ -5,7 +5,7 @@ import { LuUpload } from "react-icons/lu";
 import { useStore } from "../../../store";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
-import { set } from "zod";
+import { createChapter } from "../../../api";
 
 
 export const UploadChapters = () => {
@@ -13,59 +13,79 @@ export const UploadChapters = () => {
     const { manga , chapters  } = useStore()
     const { register, handleSubmit  } = useForm()
     const [ previewImage , setPreviewImage  ] = useState<string[]>([])
+    const [ uploadProgress, setUploadProgress] = useState(0)
+    const [ files, setFiles ] = useState<File[]>([])
 
     if( !manga ) return <div> "Manga no encontrado"</div>
     if( !chapters ) return <div> "Cargando..."</div>
 
-    const imagenesPreview = [] as string[]
     const ultimoCapitulo = chapters.length > 0 ? chapters[chapters.length - 1 ].number : 0 ;
     const proximoCapitulo = ultimoCapitulo + 1
-
+    
+    // Generar URLs de vista previa para cada archivo seleccionado, guardamos en state
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        // const files = event.target.files;
-        // if (!files) return;
 
-        // capitulosPreview.push(...files)
-
-        // capitulosPreview.forEach( (file) => {
-        //     const url = URL.createObjectURL(file)
-
-        //     // setPreviewImage(url)
-
-        //     imagenesPreview.push(url)
-
-        // })
-
-        const filesArray = Array.from(event.target.files || [])
-
-        const urls = filesArray.map( ( file) =>  URL.createObjectURL(file))
-
+        const filesRaw = Array.from(event.target.files || [])
+        const urls = filesRaw.map( ( file ) =>  URL.createObjectURL(file))
+        
+        setFiles(filesRaw)
         setPreviewImage(urls)
 
-        // files.map(  (file) => {
-        //     console.log( file ) 
-        // })
-
-
-
-        // console.log()
-
-        
-        // capitulosPreview.forEach( (file) => {
-        //     console.log("Archivo seleccionado:", file.name);
-        // })
-
-    
-
-        // const url = URL.createObjectURL(files[0])
-        
-        // setPreviewImage(url)
     };
 
-    if( imagenesPreview.length < 0 ) return;
+    // Función para subir el capítulo al backend
+    // const uploadChapter = async () => {
 
-    const onSubmit = (data: any) => {
-        console.log("Datos del formulario:", data);
+    //     const formData = new FormData()
+
+    //     const url = `${import.meta.env.VITE_API_URL}/api/chapters/create`;
+
+    //     files.forEach(file => {
+    //         formData.append("pages", file)
+    //     })
+
+    //     await axios.post(url, formData, {
+
+    //         headers: {
+    //         "Content-Type": "multipart/form-data"
+    //         },
+
+    //         onUploadProgress: (progressEvent) => {
+
+    //             const percent = (progressEvent.loaded * 100) / progressEvent.total! 
+
+    //             setUploadProgress(Math.round(percent))
+
+    //         },
+
+    //         maxRedirects: 0
+
+    //     })
+
+    // }
+
+    const onSubmit = async () => {
+
+        const formData = new FormData()
+
+        files.forEach(file => {
+            formData.append("pages", file)
+        })
+
+        formData.append("chapterNumber", proximoCapitulo.toString())
+        formData.append("title", "el camino")
+        formData.append("mangaId", manga.id)
+
+        // formData.forEach( ( value , key ) => {
+        //     console.log("FormData key: ", key, " value: ", value)
+        // })
+
+        const response = await createChapter( formData )
+
+        setUploadProgress(response.progreso)
+
+        console.log("Response from API: ", response.message, " Progreso: ", response.progreso)
+
     }
     
     return (   
@@ -109,8 +129,7 @@ export const UploadChapters = () => {
 
                 <label 
                     htmlFor="fileInput" 
-                    className="border-2 border-dashed border-slate-300 bg-slate-50 hover:border-[#0071E3] hover:bg-blue-100/20  rounded-2xl flex flex-col items-center justify-center py-16 transition-colors hover:cursor-pointer "
-
+                    className="border-2 border-dashed border-slate-300 bg-slate-50 hover:border-[#0071E3] hover:bg-blue-100/20  rounded-2xl flex flex-col items-center justify-center py-16 transition-colors hover:cursor-pointer"
                 >
 
                     <div className="bg-blue-200  p-4  rounded-full mb-4">
@@ -128,6 +147,7 @@ export const UploadChapters = () => {
                         id="fileInput" 
                         multiple
                         accept="image/jpeg, image/png, image/webp"
+                        {...register("pages", { required: true })}
                         onChange={(e) => handleFileChange(e)} 
                     />
 
@@ -151,7 +171,13 @@ export const UploadChapters = () => {
                     <div className="flex justify-between items-center">
                         <h3 className="font-bold"> Carga de Imagenes </h3>
 
-                        <button className=" flex items-center justify-center gap-2 text-gray-600 cursor-pointer"> <span className=""> <FaTrashCan/> </span> Borrar todas </button>
+                        <button 
+                            className=" flex items-center justify-center gap-2 text-gray-600 cursor-pointer"
+                        > 
+                            <span className=""> 
+                                <FaTrashCan/> 
+                            </span> Borrar todas 
+                        </button>
                     </div>
 
                     <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 mt-8">
@@ -159,15 +185,26 @@ export const UploadChapters = () => {
                         {
                             previewImage.length > 0 && (
                                 
-                                previewImage.map(image => (
+                                previewImage.map((image, index) => (
 
-                                    <div className="flex items-center justify-center aspect-[3/4] bg-slate-100 rounded-md border-2 border-slate-300 border-dashed overflow-hidden ">
+                                    <div className="relative flex items-center justify-center aspect-[3/4] bg-slate-100 rounded-md border-2 border-slate-300 border-dashed overflow-hidden ">
 
-                                        <img 
+                                        <img    
                                             src={image} 
                                             alt="Vista previa" 
-                                            className="w-full h-full object-cover"
+                                            className="w-full h-full object-contain"
                                         /> 
+
+                                        <span className="absolute bottom-0 left-0 bg-black/70 text-white text-xs px-2 py-1 rounded">
+                                            {index + 1}
+                                        </span>
+                                        
+                                        <button 
+                                            type="button"
+                                            className="absolute top-0 right-0 bg-black/70 text-white text-xs px-2 py-1 rounded"
+                                        >
+                                            X
+                                        </button>
 
                                     </div>
                                 ))
@@ -189,10 +226,10 @@ export const UploadChapters = () => {
                     <p className="block text-gray-400 text-sm">Cargando Imagenes...</p>
 
                     <div className="flex justify-center items-center gap-2">
-                        <div className=" flex-1 h-2 w-32 bg-slate-300 rounded-full overflow-hidden ">
-                            <div className="bg-[#0071E3] h-full" style={{width: "25%"}}></div>
+                        <div className=" flex-1 h-2 w-32 bg-slate-300 rounded-full overflow-hidden transition-all duration-300">
+                            <div className="bg-[#0071E3] h-full" style={{width: `${ uploadProgress }%`}}></div>
                         </div>
-                        <div className=" text-black font-bold whitespace-nowrap"> 3 de 12  cargados </div>
+                        <div className=" text-black font-bold whitespace-nowrap"> {uploadProgress} %  </div>
                     </div>
                 </div>
                 
@@ -208,6 +245,7 @@ export const UploadChapters = () => {
                     <button
                         type="submit"
                         className=" bg-[#0071E3] hover:bg-[#0056B3] font-medium text-white px-6 py-3 rounded-lg  transition-colors cursor-pointer"
+
                     >
                         <LuUpload className="inline-block mr-2" />
                         Cargar capitulo 

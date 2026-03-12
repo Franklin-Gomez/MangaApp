@@ -1,6 +1,7 @@
 import axios from 'axios';
-import { MangasSchema , MangaSchema, ChaptersSchema, type MangaFormType } from '../types';
+import { MangasSchema , MangaSchema, ChaptersSchema } from '../types';
 // ------------------------------------Manga API ------------------------------------
+
 
 export const createManga = async ( data : FormData  ) => {
 
@@ -87,7 +88,60 @@ export const deleteManga = async (  ) => {}
 
 // ------------------------------------Chapter API ------------------------------------
 
-export const createChapter = async ( ) => {}
+export const createChapter = async ( formData : FormData ) => {
+
+    let progreso = 0;
+
+    try {
+
+        const url = `${import.meta.env.VITE_API_URL}/api/chapters/create`;
+
+        const response = await axios.post( url , formData  , {
+
+            onUploadProgress: (progressEvent) => {
+
+                const percent = (progressEvent.loaded * 100) / progressEvent.total!
+
+                progreso = (Math.round(percent))
+
+            }
+
+        });
+
+        if( response.status === 500 ) {
+            throw new Error( response.data.message || 'Error respuesta de la API' );
+        }
+
+        response.data.progreso = progreso;
+        
+        return response.data;
+        
+    } catch (error) {
+        
+        console.log('Error fetching mangas:', error);
+        throw error;
+
+    }
+    
+    // await axios.post(url, formData, {
+
+    //         headers: {
+    //         "Content-Type": "multipart/form-data"
+    //         },
+
+    //         onUploadProgress: (progressEvent) => {
+
+    //             const percent = (progressEvent.loaded * 100) / progressEvent.total! 
+
+    //             setUploadProgress(Math.round(percent))
+
+    //         },
+
+    //         maxRedirects: 0
+
+    //     })
+
+}
 
 export const getAllChapters = async  ( mangaId : string) => {
 

@@ -3,7 +3,7 @@ import type{ ChaptersType, MangasType, MangaType } from '../../types'
 
 export interface MangaSlice {
   mangas: MangasType, 
-  manga: MangaType | null
+  manga: MangaType | null,
 
   chapters: ChaptersType ,
   
