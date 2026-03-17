@@ -1,6 +1,7 @@
 import { Request , Response } from 'express';
 import { addDoc, collection, query, where , getDocs , documentId, doc, updateDoc, getDoc, deleteDoc } from 'firebase/firestore';
 import { db }  from '../db/firebaseConfig';
+import { uploadImageToCloudinary } from '../services/cloudinaryService';
 
 export class ChapterController {
 
@@ -12,10 +13,29 @@ export class ChapterController {
 
             const { mangaId, title, chapterNumber } = req.body;
 
-            req.files.forEach( ( file : any , index : number ) => {
-                const url : { id: number; url: string } = { id : index + 1, url: file.path };
-                urls.push( url );
-            });
+            // for each no soporta los await dentro de su callback
+
+            // req.files.forEach( async ( file : any , index : number ) => {
+            //     const urlsPath = file.path;
+            //     const pagesUrl = await uploadImageToCloudinary(urlsPath);
+
+            //     const url : { id: number; url: string } = { id : index + 1, url: pagesUrl };
+            //     urls.push( url );
+                
+            // });
+
+            const results = await Promise.all( ( req.files  )
+                
+                .map( async ( file : any , index : number ) => {
+                    const urlsPath = file.path;
+                    const pagesUrl = await uploadImageToCloudinary(urlsPath);   
+
+                return { id : index + 1, url: pagesUrl };
+
+            }));
+
+            urls.push( ...results );
+
 
             // Here you would typically add code to save the chapter to your database
             const newChapter = await addDoc( collection( db ,  "chapters" ) , { 
@@ -24,6 +44,8 @@ export class ChapterController {
                 chapterNumber : Number(chapterNumber) , 
                 pages : urls
             });
+
+
 
             if( !newChapter.id ) {
                 return res.status(500).json({ message: 'Error al Crear Capitulo' });
