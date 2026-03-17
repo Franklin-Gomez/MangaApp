@@ -25,6 +25,8 @@ export default function ViewerCap () {
     retry: 0
   })
 
+  console.log("Capitulos: ", capitulos);
+
 
   // if( data && !mangaInfo ) {
   //   setmangaInfo( data[0] ) // porque el api devuelve un array de capitulos
@@ -152,7 +154,7 @@ export default function ViewerCap () {
                     <div className="min-h-[56vh] ">
 
                       <img className="max-w-full " 
-                        src={ cap.pages[paginaActual].paginaUrl  } 
+                        src={ cap.pages[paginaActual].url  } 
                         alt={`Pagina del capitulo ${ cap.title }` } 
                       />
 

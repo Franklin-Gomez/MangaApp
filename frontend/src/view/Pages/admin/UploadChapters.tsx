@@ -3,9 +3,10 @@ import { IoAdd } from "react-icons/io5"
 import { FaTrashCan } from "react-icons/fa6";
 import { LuUpload } from "react-icons/lu";
 import { useStore } from "../../../store";
-import { useForm } from "react-hook-form";
+import { useForm, type SubmitHandler } from "react-hook-form";
 import { useState } from "react";
 import { createChapter } from "../../../api";
+import { data } from "react-router";
 
 
 export const UploadChapters = () => {
@@ -15,6 +16,8 @@ export const UploadChapters = () => {
     const [ previewImage , setPreviewImage  ] = useState<string[]>([])
     const [ uploadProgress, setUploadProgress] = useState(0)
     const [ files, setFiles ] = useState<File[]>([])
+    const [ numberChapter, setNumberChapter ] = useState<number>(0)
+    const [ titleChapter, setTitleChapter ] = useState<string>("")
 
     if( !manga ) return <div> "Manga no encontrado"</div>
     if( !chapters ) return <div> "Cargando..."</div>
@@ -64,7 +67,7 @@ export const UploadChapters = () => {
 
     // }
 
-    const onSubmit = async () => {
+    const onSubmit = async ( ) => {
 
         const formData = new FormData()
 
@@ -72,13 +75,14 @@ export const UploadChapters = () => {
             formData.append("pages", file)
         })
 
-        formData.append("chapterNumber", proximoCapitulo.toString())
-        formData.append("title", "el camino")
+        formData.append("chapterNumber", numberChapter.toString())
+        formData.append("title", titleChapter)
         formData.append("mangaId", manga.id)
 
-        // formData.forEach( ( value , key ) => {
-        //     console.log("FormData key: ", key, " value: ", value)
-        // })
+
+        formData.forEach( ( value , key ) => {
+           console.log("FormData key: ", key, " value: ", value)
+        })
 
         const response = await createChapter( formData )
 
@@ -93,11 +97,11 @@ export const UploadChapters = () => {
             onSubmit={handleSubmit(onSubmit)}
         >
             <div className="max-w-5xl mx-auto space-y-10">
+
+                
+                {/* Manga Info Containers */}
             
                 <div className="p-10 bg-white rounded-xl shadow-sm border border-slate-200 mt-12"> 
-
-
-                    {/* Manga Info */}
                 
                     <div className="grid grid-cols-[1fr_8fr] gap-4 h-36">
 
@@ -115,8 +119,33 @@ export const UploadChapters = () => {
                         <div className="space-y-4">
 
                             <h2 className="text-2xl font-bold ">{manga?.title}</h2>
-                            <p className="text-gray-600 "> Agregando Capitulo : <span className="text-[#0071E3] hover:text-[#0056B3] cursor-pointer"> { proximoCapitulo } </span> </p>
                             <p className="text-gray-600 "> Ultimo Capitulo : <span className="text-[#0071E3] hover:text-[#0056B3] cursor-pointer"> { ultimoCapitulo } </span> </p>
+
+                            <div className="flex items-center  gap-2" >
+                                <label htmlFor="tituloChapter" className="block text-sm font-medium text-gray-700 mb-1">
+                                    Titulo del Capítulo : 
+                                </label>
+                                <input
+                                    type="text"
+                                    id="tituloChapter"
+                                    className="text-gray-600 border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    onChange={(e) => setTitleChapter(e.target.value)}
+                                    // {...register("title", { required: true }) }
+                                />
+                            </div>
+
+                            <div className="flex   items-center  gap-2" >
+                                <label htmlFor="numberChapter" className="block text-sm font-medium text-gray-700 mb-1">
+                                    Número de Capítulo : 
+                                </label>
+                                <input
+                                    id="numberChapter"
+                                    type="number"
+                                    className="text-gray-600 border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    onChange={(e) => setNumberChapter(parseInt(e.target.value) || 0)}
+                                    // {...register("chapterNumber", { required: true, valueAsNumber: true }) }
+                                />
+                            </div>
 
                         </div>
 
