@@ -15,8 +15,8 @@ export default function ViewerCap () {
   const capId = param.capId!
 
   
-  if(!mangaId) {  return <div>No se encontro el manga</div>  }
-  if(!capId) {  return <div>No se encontro el capitulo</div>  }
+  if(!mangaId) return <div>No se encontro el manga</div>  
+  if(!capId) return <div>No se encontro el capitulo</div>  
 
   const { isPending , isError , data : capitulos , error: queryError } = useQuery({
     queryKey: ['Chapter'],
@@ -24,9 +24,6 @@ export default function ViewerCap () {
     enabled: !!mangaId,
     retry: 0
   })
-
-  console.log("Capitulos: ", capitulos);
-
 
   // if( data && !mangaInfo ) {
   //   setmangaInfo( data[0] ) // porque el api devuelve un array de capitulos
@@ -119,7 +116,7 @@ export default function ViewerCap () {
             <div className=" flex justify-center items-center py-4">
 
               <select 
-                className="  p-2 rounded-md m-4" 
+                className="  p-2 rounded-md m-4 bg-white font-bold text-xl" 
                 onChange={ (e) => handleChangePage(e) }
                 value={paginaActual + 1}
               >
@@ -151,9 +148,11 @@ export default function ViewerCap () {
 
                   { cap.id ==  capId &&
 
-                    <div className="min-h-[56vh] ">
+                    // <div className="min-h-[75vh] flex justify-center items-center">
 
-                      <img className="max-w-full " 
+                    <div className="min-h-screen flex justify-center">
+
+                      <img className="w-full max-w-4xl" 
                         src={ cap.pages[paginaActual].url  } 
                         alt={`Pagina del capitulo ${ cap.title }` } 
                       />
@@ -176,7 +175,9 @@ export default function ViewerCap () {
 
           </div>
 
-          <section className="bg-oscuro ">
+
+        {/* ----------------------------------Navegacion entre capitulos ---------------------------- */} 
+          <section className="bg-oscuro  ">
 
             <div className=" flex justify-between items-center p-4 text-primary max-w-7xl mx-auto">
 

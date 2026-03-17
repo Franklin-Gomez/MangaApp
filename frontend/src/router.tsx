@@ -19,7 +19,7 @@ export default function Router() {
           <Route path="/library/:MangaId" element={<MangaInfo/>} />
           <Route path="/library" element={<Library/>} />
           <Route path="/login" element={<Login/>} />
-          <Route path="/admin/upload" element={<UploadManga/> } />
+          <Route path="/admin/uploadManga" element={<UploadManga/> } />
           <Route path="/admin/uploadChapters/:mangaId" element={<UploadChapters/>} />
           
         </Route>

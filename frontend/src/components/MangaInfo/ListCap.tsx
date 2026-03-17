@@ -63,11 +63,10 @@ export default function ListCap ( ) {
                     chapters.map( ( cap ) => (
                         <div key={cap.id} className=" flex justify-between items-center p-4   bg-white/30 rounded transition-colors cursor-pointer hover:bg-white/80 hover:shadow-lg">
 
-                            <div>
-                                <h3 className=" text-dialogue font-semibold"> { cap.title }</h3>
+                            <div className=" space-y-2">
+                                <h3 className=" text-dialogue font-semibold"> <span className="font-bold mr-6  "> Cap : { cap.chapterNumber } : </span>  { cap.title }</h3>
                                 <p className=" text-sm text-gray-300">Publicado el: 2024-01-01</p>
                             </div>
-
                             
                             <Link to={`/viewer/${mangaId}/${cap.id}`} className=" bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">Leer</Link>   
                             
