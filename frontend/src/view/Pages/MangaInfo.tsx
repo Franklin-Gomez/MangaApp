@@ -1,5 +1,4 @@
-import { useState , useEffect } from "react"
-import type  { MangaType } from "../../types"
+import { useEffect } from "react"
 import ListCap from "../../components/MangaInfo/ListCap"
 import { NavLink, useParams } from "react-router-dom"
 import { useQuery } from "@tanstack/react-query"

@@ -1,8 +1,7 @@
 import MangaCard from "../../components/lobby/MangaCard";
 import { getAllMangas } from "../../api";
 import { useQuery } from "@tanstack/react-query";
-import { useStore } from "../../store";
-import { useEffect } from "react";
+
 
 export default function Lobby () {
 

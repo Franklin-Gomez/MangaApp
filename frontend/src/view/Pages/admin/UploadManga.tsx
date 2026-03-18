@@ -18,7 +18,7 @@ export const UploadManga = () => {
 
     const [ previewImage , setPreviewImage ] = useState<string | null>( null )
 
-    const { register , handleSubmit , formState : { errors }} = useForm<MangaFormType >({
+    const { register , handleSubmit } = useForm<MangaFormType >({
         defaultValues : {
             title : "",
             author : "",
@@ -93,7 +93,7 @@ export const UploadManga = () => {
         formData.append("genre", JSON.stringify(generoSeleccionado));
         formData.append("coverUrl", file ); // MISMO NOMBRE DEL BACKEND - middleware
                 
-        const resultado = await createManga( formData )
+        await createManga( formData )
 
         // const formData = new FormData(e.currentTarget)
         // const data = Object.fromEntries(formData.entries());

@@ -3,10 +3,9 @@ import { IoAdd } from "react-icons/io5"
 import { FaTrashCan } from "react-icons/fa6";
 import { LuUpload } from "react-icons/lu";
 import { useStore } from "../../../store";
-import { useForm, type SubmitHandler } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { createChapter } from "../../../api";
-import { data } from "react-router";
 
 
 export const UploadChapters = () => {
@@ -23,7 +22,6 @@ export const UploadChapters = () => {
     if( !chapters ) return <div> "Cargando..."</div>
 
     const ultimoCapitulo = chapters.length > 0 ? chapters[chapters.length - 1 ].chapterNumber : 0 ;
-    const proximoCapitulo = ultimoCapitulo + 1
     
     // Generar URLs de vista previa para cada archivo seleccionado, guardamos en state
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
