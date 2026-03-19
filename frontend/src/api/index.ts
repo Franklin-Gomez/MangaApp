@@ -178,7 +178,29 @@ export const getChapterById = async ( { mangaId , chapterId  }  : { mangaId : st
 
 export const updateChapter = async (  ) => {}
 
-export const deleteChapter = async (  ) => {}
+export const deleteChapter = async ( chapterId : string , mangaId : string ) => {
+
+    try {
+
+        const url = `${import.meta.env.VITE_API_URL}/api/chapters/${mangaId}/deleteChapter/${chapterId}`;
+
+        const response = await axios.delete( url );
+
+        if( response.status === 404 ) {
+            throw new Error( response.data.message || 'Error respuesta de la API' );
+        }
+
+        return response.data;
+
+    } catch (error) {
+
+        console.log('Error deleting chapter:', error);
+        throw error;
+
+    }
+
+
+}
 
 
 // ------------------------------------User API ------------------------------------

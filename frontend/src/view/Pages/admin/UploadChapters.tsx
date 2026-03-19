@@ -101,7 +101,7 @@ export const UploadChapters = () => {
             
                 <div className="p-10 bg-white rounded-xl shadow-sm border border-slate-200 mt-12"> 
                 
-                    <div className="grid grid-cols-[1fr_8fr] gap-4 h-36">
+                    <div className="grid grid-cols-[1fr_8fr] gap-4 ">
 
                         <div className="h-full w-full overflow-hidden rounded-lg">
 
@@ -120,7 +120,7 @@ export const UploadChapters = () => {
                             <p className="text-gray-600 "> Ultimo Capitulo : <span className="text-[#0071E3] hover:text-[#0056B3] cursor-pointer"> { ultimoCapitulo } </span> </p>
 
                             <div className="flex items-center  gap-2" >
-                                <label htmlFor="tituloChapter" className="block text-sm font-medium text-gray-700 mb-1">
+                                <label htmlFor="tituloChapter" className="block text-sm font-medium text-gray-700 ">
                                     Titulo del Capítulo : 
                                 </label>
                                 <input
@@ -133,7 +133,7 @@ export const UploadChapters = () => {
                             </div>
 
                             <div className="flex   items-center  gap-2" >
-                                <label htmlFor="numberChapter" className="block text-sm font-medium text-gray-700 mb-1">
+                                <label htmlFor="numberChapter" className="block text-sm font-medium text-gray-700 ">
                                     Número de Capítulo : 
                                 </label>
                                 <input
