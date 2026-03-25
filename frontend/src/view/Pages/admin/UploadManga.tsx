@@ -5,18 +5,17 @@ import { IoCloseCircleOutline } from "react-icons/io5";
 import { useForm , type SubmitHandler } from "react-hook-form";
 import type { MangaFormType } from "../../../types";
 import { createManga } from "../../../api";
-
-
+import { useNavigate } from "react-router-dom";
+import { toast  } from "react-toastify"
 
 export const UploadManga = () => {
 
     const [ popOver , setPopOver]  =  useState<boolean>(false)
     const [ generoSeleccionado , setGeneroSeleccionado ] = useState<string[]>([])
-
-    // const [ loading , setLoading ] = useState<boolean>( false )
-    // const [ error , setError ] = useState<string | null>( null )
-
     const [ previewImage , setPreviewImage ] = useState<string | null>( null )
+    const [isSubmitting, setIsSubmitting] = useState(false) // estado de carga 
+
+    const navigate = useNavigate()
 
     const { register , handleSubmit } = useForm<MangaFormType >({
         defaultValues : {
@@ -35,15 +34,6 @@ export const UploadManga = () => {
         setPopOver( !popOver )
     }
 
-
-    // mi forma para cerrar el popooover
-    // if( popOver && document.getElementById("popover-menu") ) {
-
-    //     document.addEventListener("click" , (e  : MouseEvent) => {
-    //         const target = e.target as HTMLElement  ;
-    //         document.getElementById(" popover-menu")?.contains(target) || setPopOver(false)
-    //     })
-    // }
 
     // forma comun de cerrar el popover || ChapGPT
     useEffect(() => {
@@ -82,23 +72,38 @@ export const UploadManga = () => {
 
         if( !file ) return "imagen requerida"
         
-        values.genre = generoSeleccionado
+        try {
+
+            setIsSubmitting(true)
+
+            //values.coverUrl = previewImage || ""
+            const formData = new FormData();
+            formData.append("title", values.title);
+            formData.append("author", values.author);
+            formData.append("description", values.description);
+            formData.append("genre", JSON.stringify(generoSeleccionado));
+            formData.append("coverUrl", file ); // MISMO NOMBRE DEL BACKEND - middleware
+                    
+            const respuesta = await createManga( formData )
+
+            if ( !respuesta.id ) { 
+                return 
+            }
+
+            toast.success("Manga Creado Correctamente", {
+                position : "top-right",
+                autoClose : 5000
+            })
+            navigate("/")
+            
+        } catch (error) {
+            console.log( error )
+            toast.error("Error al crear un manga")
+        } finally { 
+            setIsSubmitting(false )
+        }
 
 
-        //values.coverUrl = previewImage || ""
-        const formData = new FormData();
-        formData.append("title", values.title);
-        formData.append("author", values.author);
-        formData.append("description", values.description);
-        formData.append("genre", JSON.stringify(generoSeleccionado));
-        formData.append("coverUrl", file ); // MISMO NOMBRE DEL BACKEND - middleware
-                
-        await createManga( formData )
-
-        // const formData = new FormData(e.currentTarget)
-        // const data = Object.fromEntries(formData.entries());
-
-        // console.log( data )
     }
 
     return (
@@ -359,6 +364,7 @@ export const UploadManga = () => {
                         <button
                             type="button"
                             className="  font-medium py-3 px-6 rounded-lg hover:bg-[#D2D2D7] hover:cursor-pointer transition-colors duration-300 border border-[#D2D2D7]"
+                            disabled={isSubmitting}
                         >
                             Cancelar
                         </button>
@@ -366,8 +372,9 @@ export const UploadManga = () => {
                         <button 
                             type="submit"
                             className="bg-blue-600 hover:bg-blue-700 hover:cursor-pointer text-white font-medium py-3 px-6 rounded-lg hover:bg-accent transition-colors duration-300"
+                            disabled={isSubmitting}
                         >
-                            Subir Manga
+                            { isSubmitting ? "Guardando..." : " Guardar Manga."}
                         </button>
 
 
@@ -378,8 +385,6 @@ export const UploadManga = () => {
 
             </div>
             
-
-
         </div>
     )
 }

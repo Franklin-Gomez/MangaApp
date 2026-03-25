@@ -83,7 +83,24 @@ export const getMangaById = async ( id: string ) => {
 export const updateManga = async (  ) => {}
 
 
-export const deleteManga = async (  ) => {}
+export const deleteManga = async ( mangaId : string  ) => {
+
+    try{
+        const url = `${import.meta.env.VITE_API_URL}/api/mangas/deleteManga/${mangaId}`;
+
+        const response = await axios.delete( url  )
+
+        if ( response.status == 404 ) { 
+            throw new Error( response.data.message || "Error al eliminar el Manga" )
+        }
+
+        return response.data
+
+    } catch (error) {
+        console.log('Error deleting Manga:', error);
+        throw error;
+    }
+}
 
 
 // ------------------------------------Chapter API ------------------------------------
@@ -187,7 +204,7 @@ export const deleteChapter = async ( chapterId : string , mangaId : string ) => 
         const response = await axios.delete( url );
 
         if( response.status === 404 ) {
-            throw new Error( response.data.message || 'Error respuesta de la API' );
+            throw new Error( response.data.message || 'Error Al eliminar el capitulo' );
         }
 
         return response.data;

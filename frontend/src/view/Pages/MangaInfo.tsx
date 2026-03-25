@@ -1,20 +1,15 @@
 import { useEffect } from "react"
 import ListCap from "../../components/MangaInfo/ListCap"
-import { NavLink, useParams } from "react-router-dom"
+import { NavLink, useParams , useNavigate } from "react-router-dom"
 import { useQuery } from "@tanstack/react-query"
-import { getMangaById } from "../../api"
+import { deleteManga, getMangaById } from "../../api"
 import { useStore } from "../../store"
 
 export default function MangaInfo () { 
 
-    // const [ mangaInfo , setMangaInfo] = useState<MangaType>()
-    // const [loading, setLoading] = useState(true)
-    //const [error, setError] = useState<string | null>(null)
-
     const { MangaId } = useParams<{ MangaId: string }>()
     const { manga , setManga } = useStore() 
-
-    //const  manga = mangas.find( (manga) => manga.id === MangaId )
+    const  navigate  = useNavigate()
 
     const {  data , error: queryError , isLoading } = useQuery({
         queryKey: ['OneManga' , MangaId],
@@ -23,60 +18,33 @@ export default function MangaInfo () {
         retry: 0
     })
 
-
     useEffect(() => {
         if ( !manga && data ) {
             setManga( data )
         }
     }, [data])
 
-    // if( data && !mangaInfo ) {
-    //     setMangaInfo( data )
-    //     setLoading( false )
-    // }
-
-    if( !MangaId  ) return <div> "Manga no encontrado"</div>
     
-    // if( queryError && !error ) {
-    //     setError( (queryError as Error).message )
-    //     setLoading( false )
-    // }
-
-    // async function fetchManga () {
-
-    //     try {
-
-    //         const response = await fetch('/manga.json')
-    //         const data = await response.json()
+    const handleDeleteManga = async ( mangaId : string ) => { 
         
-    //         if( data.error ) { 
-    //             throw new Error(data.message || "Manga no Encontrado")
-    //         }
-
-    //         const  manga = data.mangas.find( (manga: Manga) => manga.id == mangaId )
-
-    //         setMangaInfo( manga )
-            
-    //     } catch (error) {
-
-    //         console.log(error)
-
-    //     } finally { 
-    //         setLoading(false)
-    //     }
-    // }
-
-    // useEffect(() => {
-
-    //     fetchManga() 
-        
-    // },[mangaId]
+        try { 
+            await deleteManga( mangaId ) ; 
     
+            navigate("/")
+ 
+        } catch ( error ) { 
+
+            console.log( error )
+        
+        }
+
+    }
+
+    if ( !MangaId  ) return <div> "Manga no encontrado"</div>
     if ( isLoading ) return <div> "Cargando..."</div>
     if ( queryError ) return <div> Error </div>
-    if ( !manga && !data ) return null
-
-    if( !manga ) return <div> "Manga no encontrado"</div>
+    if (!manga && !data ) return <div> "Manga no encontrado"</div>
+    if ( !manga ) return 
 
     return (
 
@@ -120,8 +88,18 @@ export default function MangaInfo () {
                             <p className="mt-4 text-dialogue text-oscuro">En Publicacion</p>
 
                             <div>
-                                <button className=" mt-4 ml-4 px-4 py-2 border rounded shadow hover:shadow-lg transition hover:cursor-pointer">Leer Ahora</button>
-                                <button className=" mt-4 ml-4 px-4 py-2 border rounded shadow hover:shadow-lg transition hover:cursor-pointer">Agregar a Favoritos</button>
+                                <button 
+                                    className="mt-4 ml-4 px-4 py-2 border rounded shadow hover:shadow-lg transition hover:cursor-pointer"
+                                >
+                                    Leer Ahora
+
+                                </button>
+
+                                <button 
+                                    className="mt-4 ml-4 px-4 py-2 border rounded shadow hover:shadow-lg transition hover:cursor-pointer"
+                                >
+                                    Agregar a Favoritos
+                                </button>
 
 
                                 <NavLink 
@@ -129,6 +107,15 @@ export default function MangaInfo () {
                                     to={`/admin/uploadChapters/${manga.id}`}
 
                                 >Agregar Capitulos</NavLink>
+
+
+                                <button
+                                    className="mt-4 ml-4 px-4 py-2 border rounded shadow hover:shadow-lg transition hover:cursor-pointer"
+
+                                    onClick={ () => handleDeleteManga( MangaId )}
+                                >
+                                    Eliminar Manga 
+                                </button>
                                 
                             </div>
                         </div>

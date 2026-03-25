@@ -6,6 +6,8 @@ import { useStore } from "../../../store";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { createChapter } from "../../../api";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 
 export const UploadChapters = () => {
@@ -17,11 +19,15 @@ export const UploadChapters = () => {
     const [ files, setFiles ] = useState<File[]>([])
     const [ numberChapter, setNumberChapter ] = useState<number>(0)
     const [ titleChapter, setTitleChapter ] = useState<string>("")
+    const [isSubmitting, setIsSubmitting] = useState(false) // estado de carga 
+    
+    const navigate  = useNavigate()
 
     if( !manga ) return <div> "Manga no encontrado"</div>
     if( !chapters ) return <div> "Cargando..."</div>
 
     const ultimoCapitulo = chapters.length > 0 ? chapters[chapters.length - 1 ].chapterNumber : 0 ;
+
     
     // Generar URLs de vista previa para cada archivo seleccionado, guardamos en state
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -67,26 +73,45 @@ export const UploadChapters = () => {
 
     const onSubmit = async ( ) => {
 
-        const formData = new FormData()
+        try {
+            setIsSubmitting( true )
+            const formData = new FormData()
 
-        files.forEach(file => {
-            formData.append("pages", file)
-        })
+            files.forEach(file => {
+                formData.append("pages", file)
+            })
 
-        formData.append("chapterNumber", numberChapter.toString())
-        formData.append("title", titleChapter)
-        formData.append("mangaId", manga.id)
+            formData.append("chapterNumber", numberChapter.toString())
+            formData.append("title", titleChapter)
+            formData.append("mangaId", manga.id)
 
 
-        formData.forEach( ( value , key ) => {
-           console.log("FormData key: ", key, " value: ", value)
-        })
+            formData.forEach( ( value , key ) => {
+            console.log("FormData key: ", key, " value: ", value)
+            })
 
-        const response = await createChapter( formData )
+            const response = await createChapter( formData )
 
-        setUploadProgress(response.progreso)
+            setUploadProgress(response.progreso)
 
-        console.log("Response from API: ", response.message, " Progreso: ", response.progreso)
+            
+             
+            if( response.progreso == 100 ) { 
+                navigate( `/library/${manga.id}`)
+                toast.success("Capitulo agregado correctamente")
+            }
+            
+            
+        } catch (error) {
+
+            console.log( error )
+            toast.error("Error al agregar el capitulo ")
+
+        } finally { 
+            
+            setIsSubmitting(false )
+
+        }
 
     }
     
@@ -265,6 +290,7 @@ export const UploadChapters = () => {
                     <button
                         type="button"
                         className="font-medium px-4 py-2 rounded-lg border border-gray-300 hover:bg-gray-300 transition-colors cursor-pointer"
+                        disabled={isSubmitting}
                     >
                         Cancelar
                     </button>
@@ -272,10 +298,10 @@ export const UploadChapters = () => {
                     <button
                         type="submit"
                         className=" bg-[#0071E3] hover:bg-[#0056B3] font-medium text-white px-6 py-3 rounded-lg  transition-colors cursor-pointer"
-
+                        disabled={isSubmitting}
                     >
                         <LuUpload className="inline-block mr-2" />
-                        Cargar capitulo 
+                        { isSubmitting ? " Cargando Capitulo..." : "Cargar capitulo" }
                     </button>
                 </div>
 
