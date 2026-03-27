@@ -1,7 +1,8 @@
 import { Request, Response } from 'express';
-import { getFirestore, collection, doc, addDoc, updateDoc, getDocs , getDoc , Timestamp, query , where, writeBatch } from "firebase/firestore";
-import { db }  from '../db/firebaseConfig';
+// import {  collection, doc, addDoc, updateDoc, getDocs , getDoc , Timestamp, query , where, writeBatch } from "firebase-admin/firestore";
+//import { db }  from '../db/firebaseConfig';
 import { uploadImageToCloudinary } from '../services/cloudinaryService';
+import { db } from '../db/firebase';
 
 export class MangaController {
 
@@ -19,14 +20,23 @@ export class MangaController {
             const coverUrl = await uploadImageToCloudinary(req.file.path);
 
             // Crear un nuevo documento en la colección "Manga" con los datos del manga
-            const mangaRef = await addDoc(collection( db , 'Manga'),{
+            // const mangaRef = await addDoc(collection( db , 'Manga'),{
+            //     title: title,
+            //     author: author,
+            //     genre: JSON.parse(genre), // Convertir el string JSON a un array
+            //     description: description,
+            //     coverUrl: coverUrl,
+            //     createdAt: Timestamp.now() 
+            // });
+
+            const mangaRef = await db.collection("Manga").add({
                 title: title,
                 author: author,
                 genre: JSON.parse(genre), // Convertir el string JSON a un array
                 description: description,
                 coverUrl: coverUrl,
-                createdAt: Timestamp.now() 
-            });
+                createdAt: new Date()
+            })
 
             if ( !mangaRef.id) {
                 return res.status(500).json({ message: 'Error al Crear Manga' });
@@ -45,17 +55,30 @@ export class MangaController {
 
     static async getAllMangas(req : Request , res : Response) {
 
-        const mangaList : any[] = [];
+        let mangaList : any[] = [];
 
         try {
 
-            const querySnapshot = await getDocs(collection(db, "Manga"));
+            //const querySnapshot = await getDocs(collection(db, "Manga"));
 
-            querySnapshot.forEach((doc) => {
-                mangaList.push({ id: doc.id, ...doc.data() });
-            });
+            const Mangas = await db.collection("Manga").get()
 
-            return res.json(mangaList);
+            // Mangas.forEach((doc) => {
+            //     mangaList.push({ id: doc.id, ...doc.data() });
+            // });
+
+            if( Mangas.empty ) {
+                return res.status(200).json([])
+            }
+
+            mangaList = Mangas.docs.map( doc => ({ 
+                id : doc.id , 
+                ...doc.data()
+            }))
+
+            console.log( mangaList )
+
+            return res.status(200).json(mangaList);
 
         } catch (error) {
 
@@ -72,10 +95,12 @@ export class MangaController {
 
             const mangaId = req.params.id;  // req.params.id;
 
-            const mangaRef = doc(db, "Manga", mangaId); // direccion del documento a donde buscar 
-            const mangaSnap = await getDoc(mangaRef); // buscar el documento con la direccion o referencia
+            // const mangaRef = doc(db, "Manga", mangaId); // direccion del documento a donde buscar 
+            const mangaRef = db.collection("Manga").doc(mangaId)
+            // const mangaSnap = await getDoc(mangaRef); // buscar el documento con la direccion o referencia
+            const mangaSnap = await mangaRef.get()
 
-            if (!mangaSnap.exists()) { // verificamos si el documento existe
+            if (!mangaSnap.exists) { // verificamos si el documento existe
                 return res.status(404).json({ message: 'Manga no Encontrado' });
             }
 
@@ -96,39 +121,39 @@ export class MangaController {
 
         try {
 
-            const mangaId = req.params.id;  // req.params.id;
+        //     const mangaId = req.params.id;  // req.params.id;
 
-            const mangaRef = doc(db, "Manga", mangaId);
-            const mangaSnap = await getDoc(mangaRef);
+        //     //const mangaRef = doc(db, "Manga", mangaId);
+        //     //const mangaSnap = await getDoc(mangaRef);
     
-            if (!mangaSnap.exists()) {
-                return res.status(404).json({ message: 'Manga no Encontrado' });
-            }
+        //     //if (!mangaSnap.exists()) {
+        //         return res.status(404).json({ message: 'Manga no Encontrado' });
+        //     }
 
-            const existingMangaData = mangaSnap.data();
+        //     const existingMangaData = mangaSnap.data();
 
-            if( !req.body || Object.keys(req.body).length === 0 ) {
-                return res.status(400).json({ message: 'Datos de manga no proporcionados para actualizar' });
-            }
+        //     if( !req.body || Object.keys(req.body).length === 0 ) {
+        //         return res.status(400).json({ message: 'Datos de manga no proporcionados para actualizar' });
+        //     }
 
-            const newMangaData = req.body;    // Datos actualizados del manga desde el cuerpo de la solicitud
+        //     const newMangaData = req.body;    // Datos actualizados del manga desde el cuerpo de la solicitud
 
-            const mangaData =  { // simular datos actualizados del formulario
-                coverUrl: newMangaData.coverUrl ?? existingMangaData.coverUrl,
-                description: newMangaData.description ?? existingMangaData.description,
-                title: newMangaData.title ?? existingMangaData.title,
-                genre: newMangaData.genre ?? existingMangaData.genre,
-                author: newMangaData.author ?? existingMangaData.author,
-            }
+        //     const mangaData =  { // simular datos actualizados del formulario
+        //         coverUrl: newMangaData.coverUrl ?? existingMangaData.coverUrl,
+        //         description: newMangaData.description ?? existingMangaData.description,
+        //         title: newMangaData.title ?? existingMangaData.title,
+        //         genre: newMangaData.genre ?? existingMangaData.genre,
+        //         author: newMangaData.author ?? existingMangaData.author,
+        //     }
 
-            await updateDoc(mangaRef, mangaData);
+        //     //await updateDoc(mangaRef, mangaData);
 
-            res.json({ message: 'Manga actualizado'});
+        //     res.json({ message: 'Manga actualizado'});
             
         } catch (error) {
 
-            console.error("Error updating document: ", error);
-            return res.status(500).json({ message: 'Error al actualizar el Manga' });
+        //     console.error("Error updating document: ", error);
+        //     return res.status(500).json({ message: 'Error al actualizar el Manga' });
             
         }
         
@@ -137,39 +162,51 @@ export class MangaController {
     static async deleteManga(req : Request , res : Response) {
 
         try {
-            
             // borrar el Manga
             const mangaId = req.params.id;  // req.params.id;       
 
-            const mangaRef = doc(db, "Manga", mangaId); // referencia al documento del manga
-            const mangaSnap = await getDoc(mangaRef); // obtener el documento del manga
+            // const mangaRef = doc(db, "Manga", mangaId); // referencia al documento del manga
+            const mangaRef = db.collection("Manga").doc(mangaId)
+            // const mangaSnap = await getDoc(mangaRef); // obtener el documento del manga
+            const mangaSnap = await mangaRef.get()
 
             // verificar si el manga existe
-            if (!mangaSnap.exists()) {
+            if (!mangaSnap.exists) {
                 return res.status(404).json({ message: 'Manga no Encontrado' });
             }
 
-            // Buscar capítulos del manga
-            const chaptersQuery = query(
-                collection(db, "chapters"),
-                where("mangaId", "==", mangaId)
-            );
+            const snap = await db
+                .collection("chapters")
+                .where("mangaId" , "==" , mangaId)
+                .get()
 
-            // todos los capitulso de este manga
-            const chaptersSnap = await getDocs(chaptersQuery);
+            // Buscar capítulos del manga
+            // const chaptersQuery = query(
+            //     collection(db, "chapters"),
+            //     where("mangaId", "==", mangaId)
+            // );
+
+            // // todos los capitulso de este manga
+            // const chaptersSnap = await getDocs(chaptersQuery);
 
             //cree un batch para operaciones atomicas ( varias operaciones en una sola )
-            const batch = writeBatch(db);
+            // const batch = writeBatch(db);
 
+            const batch = db.batch()
+
+            // operaciones de eliminar capitulos
+            snap.forEach(( doc ) => { 
+                batch.delete(doc.ref)
+            })
 
             //   guardar todas las operaciones de eliminacion en el batch
             // delete capitulos/capId1
             // delete capitulos/capId2
             // delete Manga/mangaId
             // asi es como se veria en firestore , aun no ejecuta 
-            chaptersSnap.forEach((docSnap) => {
-                batch.delete(docSnap.ref);
-            });
+            // chaptersSnap.forEach((docSnap) => {
+            //     batch.delete(docSnap.ref);
+            // });
 
             // guardar la eliminacion del manga en el batch
             batch.delete(mangaRef);
@@ -177,7 +214,7 @@ export class MangaController {
             //  Ejecutar las operaciónes en el batch
             await batch.commit();
 
-            return res.json({ message: "Manga y capítulos eliminados correctamente" });
+            return res.status(200).json({ message: "Manga  eliminados correctamente" });
             
         } catch (error) {
 

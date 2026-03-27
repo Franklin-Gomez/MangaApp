@@ -10,6 +10,7 @@
         "module": "NodeNext",
         "strict": false,
         "sourceMap": true,
+        "resolveJsonModule": true,
         "esModuleInterop": true,
         "declaration": true
     },

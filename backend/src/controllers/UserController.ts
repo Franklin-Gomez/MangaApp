@@ -1,7 +1,8 @@
 import { Request, Response } from 'express';
-import { db } from '../db/firebaseConfig';
+// import { db } from '../db/firebaseConfig';
 import { collection, addDoc , getDoc , doc , deleteDoc , updateDoc, where , query, getDocs } from 'firebase/firestore';
 //import { ref } from 'firebase/database';
+import { db } from '../db/firebase';
 
 export class UserController {
 
@@ -17,16 +18,16 @@ export class UserController {
 
             // Lógica para crear el usuario en la base de datos
             // Simulación de creación de usuario
-            const userRef = await addDoc(collection( db , 'Users'),{
-                email,
-                password
-            });
+            // const userRef = await addDoc(collection( db , 'Users'),{
+            //     email,
+            //     password
+            // });
 
-            if(!userRef) {
-                return res.status(500).json({ message: 'Error creando el usuario' });
-            }
+            // if(!userRef) {
+            //     return res.status(500).json({ message: 'Error creando el usuario' });
+            // }
 
-            return res.status(201).json({ message: 'Usuario creado exitosamente', userId: userRef.id });
+            // return res.status(201).json({ message: 'Usuario creado exitosamente', userId: userRef.id });
             
         } catch (error) {
 
@@ -46,23 +47,23 @@ export class UserController {
                 return res.status(400).json({ message: 'Usuario y Contraseña son obligatorio' });
             }
 
-            const  userRef = collection( db, "Users");
+            // const  userRef = collection( db, "Users");
 
-            // consulta para buscar el usuario por email
-            const q = query(userRef, where ("email" , "==" , email ) );
-            const querySnapshot = await getDocs( q );
+            // // consulta para buscar el usuario por email
+            // const q = query(userRef, where ("email" , "==" , email ) );
+            // const querySnapshot = await getDocs( q );
 
-            if( querySnapshot.empty ) {
-                return res.status(401).json({ message: 'Credenciales inválidas' });
-            }
+            // if( querySnapshot.empty ) {
+            //     return res.status(401).json({ message: 'Credenciales inválidas' });
+            // }
 
-            if ( !querySnapshot.docs[0].data().email) {
-                return res.status(401).json({ message: querySnapshot.docs[0].data() });
-            }
+            // if ( !querySnapshot.docs[0].data().email) {
+            //     return res.status(401).json({ message: querySnapshot.docs[0].data() });
+            // }
 
-            if ( querySnapshot.docs[0].data().password !== password ) {
-                return res.status(401).json({ message: 'Credenciales inválidas' });
-            }
+            // if ( querySnapshot.docs[0].data().password !== password ) {
+            //     return res.status(401).json({ message: 'Credenciales inválidas' });
+            // }
 
             return res.status(200).json({ message: 'Usuario logueado exitosamente'});
 
@@ -95,16 +96,16 @@ export class UserController {
             // Simulación de obtención de perfil de usuario
             
             //reference a la coleccion de usuarios
-            const userRef = doc( db, "Users" , userId);
+            // const userRef = doc( db, "Users" , userId);
 
-            // sacar el documento
-            const userSnap = await getDoc( userRef );
+            // // sacar el documento
+            // const userSnap = await getDoc( userRef );
 
-            if( !userSnap.exists() ) {
-                return res.status(404).json({ message: 'Usuario no encontrado' });
-            }
+            // if( !userSnap.exists() ) {
+            //     return res.status(404).json({ message: 'Usuario no encontrado' });
+            // }
 
-            res.json({ id: userSnap.id, ...userSnap.data() });
+            // res.json({ id: userSnap.id, ...userSnap.data() });
             
         } catch (error) {
 
@@ -126,10 +127,10 @@ export class UserController {
 
             // Lógica para obtener el perfil del usuario desde la base de datos
             // Simulación de obtención de perfil de usuario 
-            const userRef = doc(db, "Users", userId);
+            // const userRef = doc(db, "Users", userId);
 
-            // Aquí iría la lógica para actualizar el perfil del usuario con los datos de req.body
-            await updateDoc(userRef, updatedData);
+            // // Aquí iría la lógica para actualizar el perfil del usuario con los datos de req.body
+            // await updateDoc(userRef, updatedData);
 
             res.json({ message: 'Perfil del usuario actualizado correctamente' });;
 
@@ -159,14 +160,14 @@ export class UserController {
             // Simulación de obtención de perfil de usuario
             
             //reference a la coleccion de usuarios
-            const userRef = doc( db, "Users" , userId);
+            // const userRef = doc( db, "Users" , userId);
 
-            if( !userRef ) {
-                return res.status(404).json({ message: 'Usuario no encontrado' });
-            }
+            // if( !userRef ) {
+            //     return res.status(404).json({ message: 'Usuario no encontrado' });
+            // }
 
-            // sacar el documento
-            await deleteDoc( userRef );
+            // // sacar el documento
+            // await deleteDoc( userRef );
 
             res.json({ ok:true , message : "Usuario eliminado Correctamente"});
             

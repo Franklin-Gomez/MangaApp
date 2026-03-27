@@ -1,7 +1,8 @@
 import { Request , Response } from 'express';
 import { addDoc, collection, query, where , getDocs , documentId, doc, updateDoc, getDoc, deleteDoc } from 'firebase/firestore';
-import { db }  from '../db/firebaseConfig';
+//import { db }  from '../db/firebaseConfig';
 import { uploadImageToCloudinary } from '../services/cloudinaryService';
+import { db } from '../db/firebase';
 
 export class ChapterController {
 
@@ -38,18 +39,18 @@ export class ChapterController {
 
 
             // Here you would typically add code to save the chapter to your database
-            const newChapter = await addDoc( collection( db ,  "chapters" ) , { 
-                mangaId, 
-                title, 
-                chapterNumber : Number(chapterNumber) , 
-                pages : urls
-            });
+            // const newChapter = await addDoc( collection( db ,  "chapters" ) , { 
+            //     mangaId, 
+            //     title, 
+            //     chapterNumber : Number(chapterNumber) , 
+            //     pages : urls
+            // });
 
 
 
-            if( !newChapter.id ) {
-                return res.status(500).json({ message: 'Error al Crear Capitulo' });
-            }
+            // if( !newChapter.id ) {
+            //     return res.status(500).json({ message: 'Error al Crear Capitulo' });
+            // }
 
             return res.status(201).json({ message: 'Capitulo creado' });
 
@@ -69,16 +70,16 @@ export class ChapterController {
             const chapters = []; // Lógica para obtener los capítulos desde la base de datos
             const { mangaId } = req.params;
 
-            const chaptersQuery = query( 
-                collection( db , "chapters" ) , 
-                where( "mangaId" , "==" , mangaId ) 
-            );
+            // const chaptersQuery = query( 
+            //     collection( db , "chapters" ) , 
+            //     where( "mangaId" , "==" , mangaId ) 
+            // );
 
-            const chaptersSnap = await getDocs(chaptersQuery);
+            // const chaptersSnap = await getDocs(chaptersQuery);
 
-            chaptersSnap.forEach( ( doc ) => { 
-                chapters.push( { id: doc.id , ...doc.data() } ); 
-            });
+            // chaptersSnap.forEach( ( doc ) => { 
+            //     chapters.push( { id: doc.id , ...doc.data() } ); 
+            // });
             
             return res.status(200).json(chapters);
 
@@ -99,21 +100,21 @@ export class ChapterController {
             const { mangaId , chapterId } = req.params;
             let chapters = []; 
 
-            const chapterQuery = query( 
-                collection( db , "chapters" ),
-                where( "mangaId" , "==" , mangaId ),
-                where( documentId() , "==" , chapterId)
-            );  
+            // const chapterQuery = query( 
+            //     collection( db , "chapters" ),
+            //     where( "mangaId" , "==" , mangaId ),
+            //     where( documentId() , "==" , chapterId)
+            // );  
 
-            const chapterSnap = await getDocs( chapterQuery );
+            // const chapterSnap = await getDocs( chapterQuery );
 
-            if( chapterSnap.empty ) {
-                return res.status(404).json({ message: 'Capitulo no encontrado' }); 
-            }
+            // if( chapterSnap.empty ) {
+            //     return res.status(404).json({ message: 'Capitulo no encontrado' }); 
+            // }
 
-            chapterSnap.forEach( ( doc ) => { 
-                chapters.push({ id: doc.id , ...doc.data() } );
-            });
+            // chapterSnap.forEach( ( doc ) => { 
+            //     chapters.push({ id: doc.id , ...doc.data() } );
+            // });
 
             return res.status(200).json( chapters );
             
@@ -133,20 +134,20 @@ export class ChapterController {
             const { mangaId , chapterId } = req.params;
             const data  = req.body;
 
-            const ref = doc(db, "chapters", chapterId);
-            const chapterSnap = await getDoc(ref);
+            // const ref = doc(db, "chapters", chapterId);
+            // const chapterSnap = await getDoc(ref);
 
-            if( !chapterSnap.exists() ) {
-                return res.status(404).json({ message: 'Capitulo no encontrado' }); 
-            }
+            // if( !chapterSnap.exists() ) {
+            //     return res.status(404).json({ message: 'Capitulo no encontrado' }); 
+            // }
 
-            const chapterData = chapterSnap.data();
+            // const chapterData = chapterSnap.data();
 
-            if( chapterData.mangaId !== mangaId ) {
-                return res.status(404).json({ message: 'Capitulo no pertenece a este manga' }); 
-            }
+            // if( chapterData.mangaId !== mangaId ) {
+            //     return res.status(404).json({ message: 'Capitulo no pertenece a este manga' }); 
+            // }
 
-            await updateDoc( ref , data );
+            // await updateDoc( ref , data );
 
             return  res.status(200).json({ message: 'Capitulo actualizado' });
             
@@ -164,21 +165,21 @@ export class ChapterController {
         try {
 
             const { mangaId , chapterId } = req.params;
-            const ref = doc(db, "chapters", chapterId); 
+            // const ref = doc(db, "chapters", chapterId); 
             
-            const chapterSnap = await getDoc(ref);
+            // const chapterSnap = await getDoc(ref);
 
-            if( !chapterSnap.exists() ) {
-                return res.status(404).json({ message: 'Capitulo no encontrado' }); 
-            }
+            // if( !chapterSnap.exists() ) {
+            //     return res.status(404).json({ message: 'Capitulo no encontrado' }); 
+            // }
 
-            const chapterData = chapterSnap.data();
+            // const chapterData = chapterSnap.data();
 
-            if( chapterData.mangaId !== mangaId ) {
-                return res.status(404).json({ message: 'Capitulo no pertenece a este manga' }); 
-            }
+            // if( chapterData.mangaId !== mangaId ) {
+            //     return res.status(404).json({ message: 'Capitulo no pertenece a este manga' }); 
+            // }
 
-            await deleteDoc( ref );
+            // await deleteDoc( ref );
 
             return res.status(200).json({ message: 'Capitulo eliminado' });
 
