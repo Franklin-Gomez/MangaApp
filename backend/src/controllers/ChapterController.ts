@@ -82,9 +82,13 @@ export class ChapterController {
 
             // const chaptersSnap = await getDocs(chaptersQuery);
 
-            // chaptersSnap.forEach( ( doc ) => { 
-            //     chapters.push( { id: doc.id , ...doc.data() } ); 
-            // });
+            const chaptersSnap = await db.collection("chapters").where("mangaId", "==", mangaId).get();
+
+            chaptersSnap.forEach( ( doc ) => { 
+                chapters.push({ 
+                    id: doc.id , ...doc.data() 
+                }); 
+            });
             
             return res.status(200).json(chapters);
 
