@@ -46,11 +46,16 @@ export class ChapterController {
             //     pages : urls
             // });
 
+            const newChapter = await db.collection("chapters").add({
+                mangaId, 
+                title, 
+                chapterNumber : Number(chapterNumber) , 
+                pages : urls
+            })
 
-
-            // if( !newChapter.id ) {
-            //     return res.status(500).json({ message: 'Error al Crear Capitulo' });
-            // }
+            if( !newChapter.id ) {
+                return res.status(500).json({ message: 'Error al Crear Capitulo' });
+            }
 
             return res.status(201).json({ message: 'Capitulo creado' });
 
