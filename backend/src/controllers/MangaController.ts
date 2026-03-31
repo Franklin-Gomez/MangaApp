@@ -76,8 +76,6 @@ export class MangaController {
                 ...doc.data()
             }))
 
-            console.log( mangaList )
-
             return res.status(200).json(mangaList);
 
         } catch (error) {

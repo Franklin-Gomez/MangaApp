@@ -101,7 +101,6 @@ export class ChapterController {
 
     }
 
-
     static async getChapterById (req : Request , res : Response) {
 
         try {
@@ -117,15 +116,19 @@ export class ChapterController {
 
             // const chapterSnap = await getDocs( chapterQuery );
 
-            // if( chapterSnap.empty ) {
-            //     return res.status(404).json({ message: 'Capitulo no encontrado' }); 
-            // }
+            const chapterSnap = await db.collection("chapters").doc(chapterId).get();
 
-            // chapterSnap.forEach( ( doc ) => { 
+            if( !chapterSnap.exists ) {
+                return res.status(404).json({ message: 'Capitulo no encontrado' }); 
+            }
+
+            // chapterSnap.( ( doc ) => { 
             //     chapters.push({ id: doc.id , ...doc.data() } );
             // });
 
-            return res.status(200).json( chapters );
+            const chapter = { id : chapterSnap.id , ...chapterSnap.data() };   
+
+            return res.status(200).json( chapter );
             
         } catch (error) {
             
