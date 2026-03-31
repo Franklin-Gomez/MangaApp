@@ -177,21 +177,20 @@ export class ChapterController {
         try {
 
             const { mangaId , chapterId } = req.params;
-            // const ref = doc(db, "chapters", chapterId); 
-            
-            // const chapterSnap = await getDoc(ref);
 
-            // if( !chapterSnap.exists() ) {
-            //     return res.status(404).json({ message: 'Capitulo no encontrado' }); 
-            // }
 
-            // const chapterData = chapterSnap.data();
+            const docRef = await db.collection("chapters").doc(chapterId)
+            const chapterSnap = await docRef.get();
 
-            // if( chapterData.mangaId !== mangaId ) {
-            //     return res.status(404).json({ message: 'Capitulo no pertenece a este manga' }); 
-            // }
+            if( !chapterSnap.exists ) {
+                return res.status(404).json({ message: 'Capitulo no encontrado' }); 
+            }
 
-            // await deleteDoc( ref );
+            if( chapterSnap.data()?.mangaId !== mangaId ) {
+                return res.status(404).json({ message: 'Capitulo no pertenece a este manga' }); 
+            }
+
+            await docRef.delete();
 
             return res.status(200).json({ message: 'Capitulo eliminado' });
 
