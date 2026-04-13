@@ -25,9 +25,6 @@ export default function Lobby () {
   if(isError) return <div> Error: llamado a API fallo </div>
   if (!data ) return <div> Loading... </div>
 
-
-
-
   //console.log( mangas )
 
   // async function fetchMangas() {

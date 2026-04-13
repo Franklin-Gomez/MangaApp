@@ -7,6 +7,7 @@ import type { MangaFormType } from "../../../types";
 import { createManga } from "../../../api";
 import { useNavigate } from "react-router-dom";
 import { toast  } from "react-toastify"
+import { useQueryClient } from "@tanstack/react-query";
 
 export const UploadManga = () => {
 
@@ -16,6 +17,7 @@ export const UploadManga = () => {
     const [isSubmitting, setIsSubmitting] = useState(false) // estado de carga 
 
     const navigate = useNavigate()
+    const queryClient = useQueryClient()
 
     const { register , handleSubmit } = useForm<MangaFormType >({
         defaultValues : {
@@ -89,6 +91,8 @@ export const UploadManga = () => {
             if ( !respuesta.id ) { 
                 return 
             }
+
+            queryClient.invalidateQueries({ queryKey: ['mangas'] })
 
             toast.success("Manga Creado Correctamente", {
                 position : "top-right",

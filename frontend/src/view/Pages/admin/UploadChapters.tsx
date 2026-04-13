@@ -28,7 +28,6 @@ export const UploadChapters = () => {
 
     const ultimoCapitulo = chapters.length > 0 ? chapters[chapters.length - 1 ].chapterNumber : 0 ;
 
-    
     // Generar URLs de vista previa para cada archivo seleccionado, guardamos en state
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 
@@ -39,37 +38,6 @@ export const UploadChapters = () => {
         setPreviewImage(urls)
 
     };
-
-    // Función para subir el capítulo al backend
-    // const uploadChapter = async () => {
-
-    //     const formData = new FormData()
-
-    //     const url = `${import.meta.env.VITE_API_URL}/api/chapters/create`;
-
-    //     files.forEach(file => {
-    //         formData.append("pages", file)
-    //     })
-
-    //     await axios.post(url, formData, {
-
-    //         headers: {
-    //         "Content-Type": "multipart/form-data"
-    //         },
-
-    //         onUploadProgress: (progressEvent) => {
-
-    //             const percent = (progressEvent.loaded * 100) / progressEvent.total! 
-
-    //             setUploadProgress(Math.round(percent))
-
-    //         },
-
-    //         maxRedirects: 0
-
-    //     })
-
-    // }
 
     const onSubmit = async ( ) => {
 
@@ -94,8 +62,6 @@ export const UploadChapters = () => {
 
             setUploadProgress(response.progreso)
 
-            
-             
             if( response.progreso == 100 ) { 
                 navigate( `/library/${manga.id}`)
                 toast.success("Capitulo agregado correctamente")

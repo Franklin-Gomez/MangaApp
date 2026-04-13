@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { MangasSchema , MangaSchema, ChaptersSchema } from '../types';
+import { MangasSchema , MangaSchema, ChaptersSchema, ChapterSchema } from '../types';
 // ------------------------------------Manga API ------------------------------------
 
 
@@ -11,7 +11,6 @@ export const createManga = async ( data : FormData  ) => {
 
         
         const response = await axios.post( url , data  );
-;   
         if( response.status === 500 ) {
             throw new Error( response.data.message || 'Error respuesta de la API' );
         }
@@ -48,7 +47,6 @@ export const getAllMangas = async () => {
         console.log('Error fetching mangas:', error);
         throw error;
     }
-
 
 }
 
@@ -177,13 +175,15 @@ export const getAllChapters = async  ( mangaId : string) => {
     return responseValidacion.data;
 }
 
-export const getChapterById = async ( { mangaId , chapterId  }  : { mangaId : string , chapterId : string}) => {
+export const getChapterById = async ( { mangaId , capId  }  : { mangaId : string , capId : string}) => {
 
-    const url = `${import.meta.env.VITE_API_URL}/api/chapters/${mangaId}/getOneChapter/${chapterId}`;
+    const url = `${import.meta.env.VITE_API_URL}/api/chapters/${mangaId}/getOneChapter/${capId}`;
 
     const response = await axios.get( url );
 
-    const responseValidacion = ChaptersSchema.safeParse( response.data );
+    const responseValidacion = ChapterSchema.safeParse( response.data );
+
+    console.log( responseValidacion)
 
     if( responseValidacion.success === false ) {
         throw new Error( response.data.message || 'Something went wrong' );

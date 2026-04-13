@@ -4,12 +4,15 @@ import { NavLink, useParams , useNavigate } from "react-router-dom"
 import { useQuery } from "@tanstack/react-query"
 import { deleteManga, getMangaById } from "../../api"
 import { useStore } from "../../store"
+import { useQueryClient } from "@tanstack/react-query"
+import { toast } from "react-toastify"
 
 export default function MangaInfo () { 
 
     const { MangaId } = useParams<{ MangaId: string }>()
     const { manga , setManga } = useStore() 
     const  navigate  = useNavigate()
+    const queryClient = useQueryClient()
 
     const {  data , error: queryError , isLoading } = useQuery({
         queryKey: ['OneManga' , MangaId],
@@ -29,8 +32,11 @@ export default function MangaInfo () {
         
         try { 
             await deleteManga( mangaId ) ; 
+
+            queryClient.invalidateQueries({ queryKey: ['mangas'] })
     
             navigate("/")
+            toast.success("Manga eliminado exitosamente")
  
         } catch ( error ) { 
 

@@ -4,6 +4,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { deleteChapter, getAllChapters } from "../../api";
 import { useStore } from "../../store";
 import { useEffect } from "react";
+import { toast } from "react-toastify";
 
 export default function ListCap ( ) {
 
@@ -30,31 +31,14 @@ export default function ListCap ( ) {
     if( isPending ) return <div> "Cargando..."</div>
     if( isError ) return <div> { (error as Error).message || "Error cargando los capitulos" } </div>
 
-
-    // const [ mangas , setMangas ] =  useState<Manga[]>()
-
-    // async function fetchCaps () {
-    //     const response = await fetch('/manga.json')
-    //     const data = await response.json()
-
-    //     if( data.error ) { 
-    //         throw new Error(data.message || "Manga no Encontrado")
-    //     }
-
-    //     setMangas( data.mangas )
-    // }
-
-    // useEffect(() => {
-    //     fetchCaps()
-    // },[])
-
-
-    // if ( !mangas ) return <div> "Cargando..."</div>
-
     const handleDeleteChapter = async ( chapterId : string , mangaId : string ) => {
         // Aquí puedes implementar la lógica para eliminar el capítulo, por ejemplo, haciendo una solicitud a tu API
-        await deleteChapter( chapterId , mangaId )
+        const respuesta = await deleteChapter( chapterId , mangaId )
 
+        if( respuesta.status != 200 ) return 
+
+        toast.success(respuesta.message)
+        
         queryClient.invalidateQueries({
             queryKey : ['Chapters' , mangaId ]
         })

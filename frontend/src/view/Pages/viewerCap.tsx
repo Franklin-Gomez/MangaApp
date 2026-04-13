@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useParams , Link } from "react-router-dom"
 //import type { MangaType } from "../../types";
 import { useQuery } from "@tanstack/react-query";
-import { getAllChapters } from "../../api";
+import { getAllChapters , getChapterById } from "../../api";
 
 
 export default function ViewerCap () {
@@ -20,7 +20,7 @@ export default function ViewerCap () {
 
   const { isPending , isError , data : capitulos , error: queryError } = useQuery({
     queryKey: ['Chapter'],
-    queryFn: () => getAllChapters( mangaId ),
+    queryFn: () => getAllChapters(  mangaId  ),
     enabled: !!mangaId,
     retry: 0
   })

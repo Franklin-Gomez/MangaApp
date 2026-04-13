@@ -8,8 +8,8 @@ export const MangaSchema = z.object({
     description: z.string(),    
     coverUrl: z.string().optional(),
     createdAt: z.object({
-        seconds: z.number(),
-        nanoseconds: z.number()
+        _seconds: z.number(),
+        _nanoseconds: z.number()
     }),
     coverFile:  z
         .instanceof(FileList)
