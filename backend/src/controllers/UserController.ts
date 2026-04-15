@@ -3,6 +3,7 @@ import { Request, Response } from 'express';
 import { collection, addDoc , getDoc , doc , deleteDoc , updateDoc, where , query, getDocs } from 'firebase/firestore';
 //import { ref } from 'firebase/database';
 import { db } from '../db/firebase';
+import { hashPassword , comparePassword } from '../services/passwordCryp';
 
 export class UserController {
 
@@ -15,6 +16,23 @@ export class UserController {
             if( !email || !password ) {
                 return res.status(400).json({ message: 'Usuario y Contraseña son obligatorio' });
             }
+
+            const existing = db.collection("Users").doc(email);
+            const existingSnap = await existing.get();
+
+            if( existingSnap.exists ) {
+                return res.status(409).json({ message: 'El usuario ya existe' });
+            }
+
+            // Encriptar la contraseña antes de guardarla en la base de datos
+            const hashedPassword = await hashPassword(password);
+
+            const userRef = db.collection("Users").add({
+                email,
+                password: hashedPassword
+            })
+ 
+            return res.status(201).json({ message: 'Usuario creado exitosamente', userId: (await userRef).id });
 
             // Lógica para crear el usuario en la base de datos
             // Simulación de creación de usuario
@@ -30,7 +48,7 @@ export class UserController {
             // return res.status(201).json({ message: 'Usuario creado exitosamente', userId: userRef.id });
             
         } catch (error) {
-
+            console.log(error);
             return res.status(500).json({ message: 'Error creando el usuario' });
             
         }        
@@ -46,6 +64,23 @@ export class UserController {
             if( !email || !password ) {
                 return res.status(400).json({ message: 'Usuario y Contraseña son obligatorio' });
             }
+
+            const userRef = db.collection("Users").doc(email);
+            const userSnap = await userRef.get();
+
+            if( !userSnap.exists ) {
+                return res.status(404).json({ message: 'Usuario no encontrado' });
+            }
+
+            const userData = userSnap.data();
+
+            // comparar claves encriptadas y la contraseña proporcionada por el usuario
+            const passwordMatch = await comparePassword(password, userData.password);
+
+            if( !passwordMatch ) {
+                return res.status(401).json({ message: 'Credenciales inválidas' });
+            }
+
 
             // const  userRef = collection( db, "Users");
 
