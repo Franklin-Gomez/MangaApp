@@ -1,9 +1,35 @@
 import { useForm } from "react-hook-form"
 import { Link } from "react-router-dom"
+import type { LoginType } from "../../types"
+import { useState } from "react";
+import { loginUser } from "../../api";
 
 export default function Login () {
 
-    const { register } = useForm()
+    const [showPassword, setShowPassword] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    const [successMsg, setSuccessMsg] = useState("");
+    const [serverError, setServerError] = useState("")
+
+    const { register , handleSubmit , formState : { errors } , reset } = useForm({
+        defaultValues : {
+            email: '',
+            password: ''
+        }
+    })
+
+    const handleLogin = async ( data : LoginType) => {
+
+        try {
+            const respuesta = await loginUser( data )
+            
+            console.log(respuesta);
+        } catch (error) {
+            console.log('Error en el login:', error);
+        }
+
+
+    }
 
     return (
         <>
@@ -23,15 +49,23 @@ export default function Login () {
                     
                     <div>
 
-                        <form className="px-8 border-b-2 border-tenue">
+                        <form 
+                            className="px-8 border-b-2 border-tenue"
+                            onSubmit={handleSubmit( handleLogin )}    
+                        >
 
                             <div className="flex flex-col mb-4">
                                 <label className=" flex text-muy-oscuro font-bold ">Email</label>
                                 <input 
-                                    type="email" {...register("email")} 
+                                    type="email" 
                                     placeholder="Ingresa Tu Email"
                                     className="bg-white border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:border-transparent"
+                                    {...register("email" , { required: true })} 
                                 />
+
+                                { errors.email && 
+                                    <span className="text-red-500 text-sm mt-1">El email es requerido</span> 
+                                }
                             </div>
 
                             <div className="flex flex-col mb-6">
@@ -40,17 +74,35 @@ export default function Login () {
                                     <span className=" hover:underline hover:text-gray-800 cursor-pointer "> Olvidastes tu Contraseña ?  </span>
                                 </label>
 
-                                <input 
-                                    type="password" {...register("password")} 
-                                    placeholder="Ingresa Tu Contraseña"
-                                    className="bg-white border border-gray-300 rounded-md px-4 py-2 "
-                                />
+                                <div className=" flex items-center justify-evenly">
+                                    <input 
+                                        type={showPassword ? "text" : "password" }
+                                        placeholder="Ingresa Tu Contraseña"
+                                        className="bg-white border border-gray-300 rounded-md px-4 py-2 w-full"
+                                        {...register("password" , { required: true })}
+                                    />
+
+                                    <button
+                                        type="button"
+                                        className="ml-2 text-sm text-blue-500 hover:underline focus:outline-none"
+                                        onClick={() => setShowPassword((v) => !v)}
+                                    >
+                                        {showPassword ? "Ocultar" : "Mostrar"}
+                                    </button>
+
+                                </div>
+
+                                { errors.password && 
+                                    
+                                    <span className=" text-red-500 text-sm mt-1">La contraseña es requerida</span> 
+                                    
+                                }
                                 
                             </div>
 
                             <button 
                                 type="submit"
-                                className="w-full py-3 bg-muy-oscuro text-white rounded-md mb-8 hover:bg-gray-800 hover:shadow-lg hover:font-bold transition cursor-pointer"
+                                className="w-full py-3 bg-muy-oscuro text-white rounded-md mb-4 hover:bg-gray-800 hover:shadow-lg hover:font-bold transition duration-150 cursor-pointer"
                             >Iniciar Sesion</button>
 
                         </form>
@@ -60,7 +112,7 @@ export default function Login () {
                     <div 
                         className="mb-8 text-primary"
                     >
-                        No tienes una cuenta? <Link to="/registrarse" className="font-mediusm text-secondary hover:font-black hover:underline">Registrarse</Link>    
+                        No tienes una cuenta? <Link to="/register" className="font-mediusm text-blue-500 hover:font-bold  hover:underline">Registrarse</Link>    
                     </div>
 
                 </div>

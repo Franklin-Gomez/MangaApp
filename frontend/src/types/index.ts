@@ -65,3 +65,18 @@ export const ChaptersSchema = z.array(ChapterSchema);
 
 export type ChapterType = z.infer<typeof ChapterSchema>;
 export type ChaptersType = z.infer<typeof ChaptersSchema>;
+
+
+
+// -----------------------------------User Schema ------------------------------------
+
+export const LoginSchema = z.object({
+    email: z.string().email(),
+    password: z.string()
+});
+
+export type LoginType = z.infer<typeof LoginSchema>;
+
+export const RegisterSchema = LoginSchema.extend({  confirmPassword: z.string() })
+
+export type RegisterType = z.infer<typeof RegisterSchema>;

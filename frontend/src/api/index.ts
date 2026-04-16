@@ -1,5 +1,5 @@
-import axios from 'axios';
-import { MangasSchema , MangaSchema, ChaptersSchema, ChapterSchema } from '../types';
+import axios, { AxiosError } from 'axios';
+import { MangasSchema , MangaSchema, ChaptersSchema, ChapterSchema, type LoginType } from '../types';
 // ------------------------------------Manga API ------------------------------------
 
 
@@ -224,7 +224,24 @@ export const deleteChapter = async ( chapterId : string , mangaId : string ) => 
 
 export const createUser = async (  ) => {}
 
-export const getAllUsers = async () => {}
+export const loginUser = async ( user : LoginType  ) => {
+
+    try {
+
+        const url = `${import.meta.env.VITE_API_URL}/api/users/login`;
+
+        const response = await axios.post( url , user );
+
+        return response.data;
+
+    } catch (error ) {
+
+        if( axios.isAxiosError(error) && error.response ) {
+            throw new Error( error.response.data.message)
+        }
+
+    }
+}
 
 export const getUserById = async (  ) => {}
 

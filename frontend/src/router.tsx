@@ -8,6 +8,7 @@ import Library from './view/Pages/Library'
 import Login  from './view/Pages/Login'
 import { UploadManga } from './view/Pages/admin/UploadManga'
 import { UploadChapters } from './view/Pages/admin/UploadChapters'
+import { Register } from './view/Pages/register'
 
 export default function Router() {
   return (
@@ -19,6 +20,7 @@ export default function Router() {
           <Route path="/library/:MangaId" element={<MangaInfo/>} />
           <Route path="/library" element={<Library/>} />
           <Route path="/login" element={<Login/>} />
+          <Route path="/register" element={<Register/>} />
           <Route path="/admin/uploadManga" element={<UploadManga/> } />
           <Route path="/admin/uploadChapters/:mangaId" element={<UploadChapters/>} />
           

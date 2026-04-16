@@ -28,7 +28,13 @@ export const UploadManga = () => {
         }
     })
 
-    const generos = [ "Action" , "Adventure" , "Comedy" , "Drama" , "Fantasy" , "Horror" , "Mystery" , "Romance" , "Sci-Fi" , "Slice of Life" , "Sports" , "Supernatural" , "Thriller" ]
+    const generos = [ 
+        "Action" , "Adventure" , "Comedy" , 
+        "Drama" , "Fantasy" , "Horror" , 
+        "Mystery" , "Romance" , "Sci-Fi" , 
+        "Slice of Life" , "Sports" , "Supernatural" , 
+        "Thriller" 
+    ]
 
     const popoverRef = useRef<HTMLDivElement | null>(null);
 
