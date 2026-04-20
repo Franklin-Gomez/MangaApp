@@ -11,16 +11,17 @@ export class UserController {
 
         try {
 
-            const { email, password } = req.body;   
+            const { email, password  } = req.body;   
+
+            const normalizedEmail  = email.toLowerCase().trim();
 
             if( !email || !password ) {
                 return res.status(400).json({ message: 'Usuario y Contraseña son obligatorio' });
             }
 
-            const existing = db.collection("Users").doc(email);
-            const existingSnap = await existing.get();
-
-            if( existingSnap.exists ) {
+            const snapshot = await db.collection("Users").where("email", "==", normalizedEmail).get();
+                        
+            if( !snapshot.empty ) {
                 return res.status(409).json({ message: 'El usuario ya existe' });
             }
 
@@ -33,21 +34,9 @@ export class UserController {
             })
  
             return res.status(201).json({ message: 'Usuario creado exitosamente', userId: (await userRef).id });
-
-            // Lógica para crear el usuario en la base de datos
-            // Simulación de creación de usuario
-            // const userRef = await addDoc(collection( db , 'Users'),{
-            //     email,
-            //     password
-            // });
-
-            // if(!userRef) {
-            //     return res.status(500).json({ message: 'Error creando el usuario' });
-            // }
-
-            // return res.status(201).json({ message: 'Usuario creado exitosamente', userId: userRef.id });
-            
+                        
         } catch (error) {
+
             console.log(error);
             return res.status(500).json({ message: 'Error creando el usuario' });
             
@@ -59,20 +48,21 @@ export class UserController {
 
         try {
 
-            const { email, password } = req.body;   
-
+            const { email, password } = req.body;
+            
+            const normalizedEmail  = email.toLowerCase().trim();
+            
             if( !email || !password ) {
                 return res.status(400).json({ message: 'Usuario y Contraseña son obligatorio' });
             }
 
-            const userRef = db.collection("Users").doc(email);
-            const userSnap = await userRef.get();
+            const snapshot = await db.collection("Users").where("email", "==", normalizedEmail).get();
 
-            if( !userSnap.exists ) {
-                return res.status(404).json({ message: 'Usuario no encontrado' });
+            if( snapshot.empty ) {
+                return res.status(404).json({ message: 'Credenciales inválidas' });
             }
 
-            const userData = userSnap.data();
+            const userData = snapshot.docs[0].data();
 
             // comparar claves encriptadas y la contraseña proporcionada por el usuario
             const passwordMatch = await comparePassword(password, userData.password);
@@ -81,6 +71,7 @@ export class UserController {
                 return res.status(401).json({ message: 'Credenciales inválidas' });
             }
 
+            return res.status(200).json({ message: 'Usuario logueado exitosamente'});
 
             // const  userRef = collection( db, "Users");
 
@@ -100,7 +91,6 @@ export class UserController {
             //     return res.status(401).json({ message: 'Credenciales inválidas' });
             // }
 
-            return res.status(200).json({ message: 'Usuario logueado exitosamente'});
 
             
         } catch (error) {
