@@ -1,5 +1,5 @@
 import axios, { AxiosError } from 'axios';
-import { MangasSchema , MangaSchema, ChaptersSchema, ChapterSchema, type LoginType } from '../types';
+import { MangasSchema , MangaSchema, ChaptersSchema, ChapterSchema, type LoginType, type RegisterType } from '../types';
 // ------------------------------------Manga API ------------------------------------
 
 
@@ -222,7 +222,27 @@ export const deleteChapter = async ( chapterId : string , mangaId : string ) => 
 
 // ------------------------------------User API ------------------------------------
 
-export const createUser = async (  ) => {}
+export const createUser = async ( userData : RegisterType ) => {
+
+    try {
+
+        const url = `${import.meta.env.VITE_API_URL}/api/users/create`;
+
+        const response = await axios.post( url , userData );
+
+        console.log( response )
+
+        return response.data;
+        
+    } catch (error) {
+
+        if( axios.isAxiosError(error) && error.response ) {
+           throw new Error( error.response.data.message || 'Error al crear el usuario' );
+        }
+ 
+    }
+
+}
 
 export const loginUser = async ( user : LoginType  ) => {
 
@@ -231,6 +251,8 @@ export const loginUser = async ( user : LoginType  ) => {
         const url = `${import.meta.env.VITE_API_URL}/api/users/login`;
 
         const response = await axios.post( url , user );
+
+        // localStorage.setItem('AUTH_TOKEN', response.data.token)
 
         return response.data;
 

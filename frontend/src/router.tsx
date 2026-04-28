@@ -9,6 +9,7 @@ import Login  from './view/Pages/Login'
 import { UploadManga } from './view/Pages/admin/UploadManga'
 import { UploadChapters } from './view/Pages/admin/UploadChapters'
 import { Register } from './view/Pages/register'
+import { ProtectedRoute } from './utils/Auth'
 
 export default function Router() {
   return (
@@ -21,8 +22,14 @@ export default function Router() {
           <Route path="/library" element={<Library/>} />
           <Route path="/login" element={<Login/>} />
           <Route path="/register" element={<Register/>} />
-          <Route path="/admin/uploadManga" element={<UploadManga/> } />
-          <Route path="/admin/uploadChapters/:mangaId" element={<UploadChapters/>} />
+
+          {/* Routes protegidas para admin */}
+          <Route element={<ProtectedRoute/>} > 
+
+            <Route path="/admin/uploadManga" element={<UploadManga/> } />
+            <Route path="/admin/uploadChapters/:mangaId" element={<UploadChapters/>} />
+
+          </Route>
           
         </Route>
 

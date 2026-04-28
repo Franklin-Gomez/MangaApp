@@ -1,26 +1,37 @@
 import { useForm } from "react-hook-form"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import type { RegisterType } from "../../types"
 import { useState } from "react";
-
+import { createUser } from "../../api";
+import { toast } from "react-toastify";
 
 export const Register = () => {
 
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const [successMsg, setSuccessMsg] = useState("");
+
     
-    const { register, handleSubmit , formState : { errors }  , reset , watch } = useForm<RegisterType>()
+    const { register, handleSubmit , formState : { errors } , reset ,  watch } = useForm<RegisterType>()
 
     const password = watch('password');
+    const navigate = useNavigate();
 
+    const handleRegister = async ( data : RegisterType ) => {
 
-    const handleRegister = ( data : RegisterType ) => {
+        try {
+            
+            const result = await createUser( data );
+    
+            toast.success(result.message);
+            reset();
+            navigate('/login');
 
-        console.log(data);
+        } catch (error) {
 
-        reset();
+            toast.error(error instanceof Error ? error.message : 'Error desconocido');
+
+        }
     }
 
     return (

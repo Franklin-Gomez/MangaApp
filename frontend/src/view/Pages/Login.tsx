@@ -1,8 +1,10 @@
 import { useForm } from "react-hook-form"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import type { LoginType } from "../../types"
 import { useState } from "react";
 import { loginUser } from "../../api";
+import { toast } from "react-toastify";
+import { useAuth } from "../../auth/AuthProvider";
 
 export default function Login () {
 
@@ -11,6 +13,9 @@ export default function Login () {
     const [successMsg, setSuccessMsg] = useState("");
     const [serverError, setServerError] = useState("")
 
+    
+    const { login } = useAuth();
+    const navigate = useNavigate();
     const { register , handleSubmit , formState : { errors } , reset } = useForm({
         defaultValues : {
             email: '',
@@ -22,12 +27,16 @@ export default function Login () {
 
         try {
             const respuesta = await loginUser( data )
-            
-            console.log(respuesta);
+            login( { token: respuesta.token  } );
+            toast.success(respuesta.message);
+            reset();
+            navigate('/');
+        
         } catch (error) {
-            console.log('Error en el login:', error);
-        }
 
+            console.log('Error en el login:', error);
+            toast.error(error instanceof Error ? error.message : 'Error desconocido');  
+        }
 
     }
 
